@@ -7,13 +7,13 @@ metadata:
 spec:
   tls:
   - hosts:
-    - anthony-blockchain.us-south.containers.mybluemix.net
-    secretName: anthony-blockchain
+    - anthony-propelify.us-south.containers.mybluemix.net
+    secretName: anthony-propelify
   backend:
     serviceName: mobile-assets
     servicePort: 80
   rules:
-  - host: anthony-blockchain.us-south.containers.mybluemix.net
+  - host: anthony-propelify.us-south.containers.mybluemix.net
     http:
       paths:
       - path: /api
@@ -23,10 +23,6 @@ spec:
       - path: /registerees
         backend:
           serviceName: registeree-api
-          servicePort: 80
-      - path: /gravatar
-        backend:
-          serviceName: gravatar
           servicePort: 80
       - path: /leaderboard
         backend:

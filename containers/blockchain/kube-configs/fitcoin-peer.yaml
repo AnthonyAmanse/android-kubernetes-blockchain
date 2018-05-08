@@ -27,7 +27,7 @@ spec:
         app: fitcoin-peer
     spec:
       containers:
-      - image: anthonyamanse/kubecon-fitcoin-peer:latest
+      - image: anthonyamanse/propelify-fitcoin-peer:latest
         imagePullPolicy: Always
         workingDir: /peer
         command: ["peer"]

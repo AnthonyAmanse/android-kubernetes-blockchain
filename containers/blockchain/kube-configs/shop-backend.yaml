@@ -24,7 +24,7 @@ spec:
         app: shop-backend
     spec:
       containers:
-      - image: anthonyamanse/kubecon-backend:latest
+      - image: anthonyamanse/propelify-backend:latest
         imagePullPolicy: Always
         name: shop-backend
         ports:

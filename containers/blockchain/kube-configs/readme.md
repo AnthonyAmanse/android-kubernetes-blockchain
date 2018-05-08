@@ -28,23 +28,23 @@ Build the docker images
 ```
 export DOCKERHUB_USERNAME=<your-dockerhub-username>
 
-docker build -t $DOCKERHUB_USERNAME/kubecon-orderer-peer:latest orderer/
-docker build -t $DOCKERHUB_USERNAME/kubecon-shop-peer:latest shopPeer/
-docker build -t $DOCKERHUB_USERNAME/kubecon-fitcoin-peer:latest fitcoinPeer/
-docker build -t $DOCKERHUB_USERNAME/kubecon-shop-ca:latest shopCertificateAuthority/
-docker build -t $DOCKERHUB_USERNAME/kubecon-fitcoin-ca:latest fitcoinCertificateAuthority/
-docker build -t $DOCKERHUB_USERNAME/kubecon-blockchain-setup:latest blockchainNetwork/
-docker build -t $DOCKERHUB_USERNAME/kubecon-backend:latest backend/
-docker build -t $DOCKERHUB_USERNAME/kubecon-rabbitclient-api:latest rabbitClient/
+docker build -t $DOCKERHUB_USERNAME/propelify-orderer-peer:latest orderer/
+docker build -t $DOCKERHUB_USERNAME/propelify-shop-peer:latest shopPeer/
+docker build -t $DOCKERHUB_USERNAME/propelify-fitcoin-peer:latest fitcoinPeer/
+docker build -t $DOCKERHUB_USERNAME/propelify-shop-ca:latest shopCertificateAuthority/
+docker build -t $DOCKERHUB_USERNAME/propelify-fitcoin-ca:latest fitcoinCertificateAuthority/
+docker build -t $DOCKERHUB_USERNAME/propelify-blockchain-setup:latest blockchainNetwork/
+docker build -t $DOCKERHUB_USERNAME/propelify-backend:latest backend/
+docker build -t $DOCKERHUB_USERNAME/propelify-rabbitclient-api:latest rabbitClient/
 
-docker push $DOCKERHUB_USERNAME/kubecon-orderer-peer:latest
-docker push $DOCKERHUB_USERNAME/kubecon-shop-peer:latest
-docker push $DOCKERHUB_USERNAME/kubecon-fitcoin-peer:latest
-docker push $DOCKERHUB_USERNAME/kubecon-shop-ca:latest
-docker push $DOCKERHUB_USERNAME/kubecon-fitcoin-ca:latest
-docker push $DOCKERHUB_USERNAME/kubecon-blockchain-setup:latest
-docker push $DOCKERHUB_USERNAME/kubecon-backend:latest
-docker push $DOCKERHUB_USERNAME/kubecon-rabbitclient-api:latest
+docker push $DOCKERHUB_USERNAME/propelify-orderer-peer:latest
+docker push $DOCKERHUB_USERNAME/propelify-shop-peer:latest
+docker push $DOCKERHUB_USERNAME/propelify-fitcoin-peer:latest
+docker push $DOCKERHUB_USERNAME/propelify-shop-ca:latest
+docker push $DOCKERHUB_USERNAME/propelify-fitcoin-ca:latest
+docker push $DOCKERHUB_USERNAME/propelify-blockchain-setup:latest
+docker push $DOCKERHUB_USERNAME/propelify-backend:latest
+docker push $DOCKERHUB_USERNAME/propelify-rabbitclient-api:latest
 ```
 
 THEN edit yaml files in here to use your images

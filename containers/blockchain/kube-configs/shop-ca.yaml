@@ -24,7 +24,7 @@ spec:
         app: shop-ca
     spec:
       containers:
-      - image: anthonyamanse/kubecon-shop-ca:latest
+      - image: anthonyamanse/propelify-shop-ca:latest
         imagePullPolicy: Always
         command: ["fabric-ca-server"]
         args: ["start","--db.datasource","db/shop-fabric-ca-server.db"]

@@ -27,7 +27,7 @@ spec:
         app: shop-peer
     spec:
       containers:
-      - image: anthonyamanse/kubecon-shop-peer:latest
+      - image: anthonyamanse/propelify-shop-peer:latest
         imagePullPolicy: Always
         workingDir: /peer
         command: ["peer"]

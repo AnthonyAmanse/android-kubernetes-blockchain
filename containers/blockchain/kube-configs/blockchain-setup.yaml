@@ -12,7 +12,7 @@ spec:
     spec:
       restartPolicy: "Never"
       containers:
-      - image: anthonyamanse/kubecon-blockchain-setup:latest
+      - image: anthonyamanse/propelify-blockchain-setup:latest
         imagePullPolicy: Always
         # command: ["sleep"]
         # args: ["10m"]

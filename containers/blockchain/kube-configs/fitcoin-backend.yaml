@@ -11,7 +11,7 @@ spec:
         app: fitcoin-backend
     spec:
       containers:
-      - image: anthonyamanse/kubecon-backend:latest
+      - image: anthonyamanse/propelify-backend:latest
         imagePullPolicy: Always
         name: fitcoin-backend
         env:

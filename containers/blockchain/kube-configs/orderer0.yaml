@@ -25,7 +25,7 @@ spec:
         app: orderer0
     spec:
       containers:
-      - image: anthonyamanse/kubecon-orderer-peer:latest
+      - image: anthonyamanse/propelify-orderer-peer:latest
         imagePullPolicy: Always
         workingDir: /orderer
         command: ["orderer"]
