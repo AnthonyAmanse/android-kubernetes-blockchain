@@ -1,4 +1,4 @@
-# android-kubernetes-blockchain
+# Create an Android app with Blockchain Integration
 
 ![](docs/architecture.png)
 ## Flow
@@ -35,18 +35,247 @@ The first time the user opens the app, he gets anonymously assigned a unique use
 ## Featured Technologies
 
 * [Blockchain](https://www.ibm.com/blockchain): Distributed database maintaining a continuously growing list of secured records or blocks.
+* [Container Orchestration](https://www.ibm.com/cloud/container-service): Automating the deployment, scaling and management of containerized applications.
 * [Serverless](https://www.ibm.com/cloud/functions): An event-action platform that allows you to execute code in response to an event.
 * [Databases](https://en.wikipedia.org/wiki/IBM_Information_Management_System#.22Full_Function.22_databases): Repository for storing and managing collections of data.
+
+# Prerequisite
+
+Create a Kubernetes cluster with either [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube) for local testing, or with [IBM Bluemix Container Service](https://console.bluemix.net/docs/containers/cs_cli_install.html#cs_cli_install) to deploy in cloud. The code here is regularly tested against [Kubernetes Cluster from Bluemix Container Service](https://console.ng.bluemix.net/docs/containers/cs_ov.html#cs_ov) using Travis.
+
+Install [Docker](https://www.docker.com) by following the instructions [here](https://www.docker.com/community-edition#/download) for your preferrerd operating system. You would need docker if you want to build and use your own images.
+
+Install [Android Studio](https://developer.android.com/studio/).
 
 # Steps
 
 ### Clone the repo
 
+```
+$ git clone https://github.com/IBM/android-kubernetes-blockchain
+```
+
 ### Create IBM Cloud services
+
+Create the following services:
+
+* [IBM Cloud Container Service](https://console.bluemix.net/containers-kubernetes/catalog/cluster)
+* [Compose for MongoDB](https://console.bluemix.net/catalog/services/compose-for-mongodb)
+* [Compose for RabbitMQ](https://console.bluemix.net/catalog/services/compose-for-rabbitmq)
+* [Compose for Redis](https://console.bluemix.net/catalog/services/compose-for-redis)
 
 ### Configure the Blockchain Network
 
-### Deploy the Blockchain Network
+* Get your Compose for RabbitMQ and Redis credentials in your IBM Cloud Dashboard
+
+![](docs/rabbit-credentials.png)
+
+![](docs/redis-credentials.png)
+
+* In `containers/blockchain/configuration/config.js`, modify the values for `rabbitmq` and `redis` with your own credentials.
+
+```
+chaincodePath: 'bcfit',
+rabbitmq: 'amqps://admin:QWERTY@portal-ssl334-23.bmix-dal-yp-abc10717-6f73-4f63-b039-a1d2485c1566.devadvo-us-ibm-com.composedb.com:38919/bmix-dal-yp-abc10717-6f73-4f63-b039-a1d2485c1566',
+redisUrl: 'redis://admin:QWERTY@sl-us-south-1-portal.23.dblayer.com:38916',
+```
+
+* Generate certificates and for the blockchain network
+
+```
+$ cd containers/blockchain
+$ export FABRIC_CFG_PATH=$(pwd)
+$ ./generate-certs.sh
+```
+
+* Build the docker images for your blockchain network
+
+```
+export DOCKERHUB_USERNAME=<your-dockerhub-username>
+
+docker build -t $DOCKERHUB_USERNAME/kubecon-orderer-peer:latest orderer/
+docker build -t $DOCKERHUB_USERNAME/kubecon-shop-peer:latest shopPeer/
+docker build -t $DOCKERHUB_USERNAME/kubecon-fitcoin-peer:latest fitcoinPeer/
+docker build -t $DOCKERHUB_USERNAME/kubecon-shop-ca:latest shopCertificateAuthority/
+docker build -t $DOCKERHUB_USERNAME/kubecon-fitcoin-ca:latest fitcoinCertificateAuthority/
+docker build -t $DOCKERHUB_USERNAME/kubecon-blockchain-setup:latest blockchainNetwork/
+docker build -t $DOCKERHUB_USERNAME/kubecon-backend:latest backend/
+docker build -t $DOCKERHUB_USERNAME/kubecon-rabbitclient-api:latest rabbitClient/
+
+docker push $DOCKERHUB_USERNAME/kubecon-orderer-peer:latest
+docker push $DOCKERHUB_USERNAME/kubecon-shop-peer:latest
+docker push $DOCKERHUB_USERNAME/kubecon-fitcoin-peer:latest
+docker push $DOCKERHUB_USERNAME/kubecon-shop-ca:latest
+docker push $DOCKERHUB_USERNAME/kubecon-fitcoin-ca:latest
+docker push $DOCKERHUB_USERNAME/kubecon-blockchain-setup:latest
+docker push $DOCKERHUB_USERNAME/kubecon-backend:latest
+docker push $DOCKERHUB_USERNAME/kubecon-rabbitclient-api:latest
+```
+
+* Edit these YAML files in `kube-configs` folder to use your images
+  * blockchain-setup.yaml
+  * orderer0.yaml
+  * shop-peer.yaml
+  * fitcoin-peer.yaml
+  * shop-ca.yaml
+  * fitcoin-ca.yaml
+  * fitcoin-backend.yaml
+  * rabbitclient-api.yaml
+
+* Modify `kube-configs/secrets.yaml` to use your configuration and the `channel.tx` generated
+
+```
+$ cat configuration/config.json | base64
+$ cat configuration/channel.tx | base64
+
+and place them in kube-configs/secrets.yaml
+
+...
+data:
+  config.json: '<configruation/config.json in base64>'
+  channel.tx: '<configruation/channel.tx in base64>'
+...
+```
+
+### Deploy the Blockchain Network in Kubernetes
+
+* Change directory
+
+```
+cd kube-configs
+```
+
+* Create persistent volumes for the Blockchain network (state database, certificates, and ledger). This creates persistent volume claims and gets provisioned dynamically.
+
+```
+$ kubectl create -f persistent-volume
+
+# wait for them to get provisioned using kubectl get
+
+$ kubectl get pv,pvc
+
+# you should see something like this:
+#
+# NAME                                          CAPACITY   ACCESSMODES   # RECLAIMPOLICY   STATUS    CLAIM                   STORAGECLASS     REASON    AGE
+# pv/pvc-f57460fc-500f-11e8-a7d6-36f53fdc1872   20Gi       RWX           Delete          Bound     default/peer-claim      ibmc-file-gold             5d
+# pv/pvc-f585de1d-500f-11e8-a7d6-36f53fdc1872   20Gi       RWX           Delete          Bound     default/org-ca-claim    ibmc-file-gold             5d
+# pv/pvc-f5970726-500f-11e8-a7d6-36f53fdc1872   20Gi       RWX           Delete          Bound     default/couchdb-claim   ibmc-file-gold             5d
+#
+# NAME                STATUS    VOLUME                                     CAPACITY   ACCESSMODES   STORAGECLASS     AGE
+# pvc/couchdb-claim   Bound     pvc-f5970726-500f-11e8-a7d6-36f53fdc1872   20Gi       RWX           ibmc-file-gold   5d
+# pvc/org-ca-claim    Bound     pvc-f585de1d-500f-11e8-a7d6-36f53fdc1872   20Gi       RWX           ibmc-file-gold   5d
+# pvc/peer-claim      Bound     pvc-f57460fc-500f-11e8-a7d6-36f53fdc1872   20Gi       RWX           ibmc-file-gold   5d
+```
+
+* Create the secrets and deploy the certificate authorities
+
+```
+$ kubectl create -f secrets.yaml
+$ kubectl apply -f shop-ca.yaml
+$ kubectl apply -f fitcoin-ca.yaml
+
+# Wait for them to run
+
+$ kubectl get pods
+```
+
+* Create couchdb. This is the statedb of the peers.
+
+```
+$ kubectl apply -f ca-datastore.yaml
+$ kubectl apply -f fitcoin-statedb.yaml
+$ kubectl apply -f shop-statedb.yaml
+
+# Wait for them to run
+
+$ kubectl get pods
+```
+
+* Create orderer and peers of the blockchain network. We have two organizations in the blockchain network, the Shop and Fitcoin.
+
+```
+$ kubectl apply -f orderer0.yaml
+$ kubectl apply -f shop-peer.yaml
+$ kubectl apply -f fitcoin-peer.yaml
+
+# Wait for them to run
+
+$ kubectl get pods
+```
+
+* Setup the Blockchain network with the blockchain-setup job. This creates and joins the peers in a channel and installs and instantiates the chaincode
+
+```
+$ kubectl apply -f blockchain-setup.yaml
+```
+
+* Check if the blockchain setup is complete by checking the logs of the blockchain-setup pod.
+
+```
+$ kubectl logs -l app=blockchain-setup
+
+# should result into:
+#
+# Default channel not found, attempting creation...
+# Successfully created a new default channel.
+# Joining peers to the default channel.
+# Chaincode is not installed, attempting installation...
+# Base container image present.
+# info: [packager/Golang.js]: packaging GOLANG from bcfit
+# info: [packager/Golang.js]: packaging GOLANG from bcfit
+# Successfully installed chaincode on the default channel.
+# Successfully instantiated chaincode on all peers.
+# Blockchain newtork setup complete.
+```
+
+* Once it is done, create the execution requests backend and the API client for the Blockchain network.
+
+```
+$ kubectl apply -f shop-backend.yaml
+$ kubectl apply -f fitcoin-backend.yaml
+$ kubectl apply -f rabbitclient-api.yaml
+
+# Wait for them to run
+
+$ kubectl get pods
+```
+
+* Test the blockchain network using its API client.
+
+```
+$ kubectl get svc rabbitclient-api
+
+# NAME               CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
+# rabbitclient-api   172.21.40.201   169.61.17.000   3000:30726/TCP   14m
+```
+
+* Use the external IP of the service to do a curl request
+
+```
+$ export URL="http://169.61.17.000:3000"
+
+$ curl -H "Content-Type: application/json" -X POST -d '{"type":"enroll","queue":"user_queue","params":{}}' "$URL/api/execute"
+
+# you should get something like this
+# {"status":"success","resultId":"7f90764a-8660-45f2-904d-47d8fb87a900"}
+```
+
+* Check the result using the `resultId` you got above. You should get a user ID.
+
+```
+$ curl $URL/api/results/RESULT_ID
+
+# RESULT_ID from the previous step is 7f90764a-8660-45f2-904d-47d8fb87a900
+# you should get something like this
+# {"status":"done","result":"{\"message\":\"success\",\"result\":{\"user\":\"50f97085-376d-40b3-8992-a9a2e6d18668\",\"txId\":\"2fcddeae9ddece5c818fed626601fba80711f3583944f8e53632972792954e09\"}}"}
+
+# if you {"status":"pending"}
+# try again or check if the resultId you copied is correct
+```
+
+* Well done! Your blockchain network is ready to be integrated with the Android app. Proceed to the next step to deploy more Microservices that are needed for the mobile app.
+
+### Configure and Deploy Microservices in Kubernetes
 
 ### Configure the Android app
 
