@@ -1,7 +1,18 @@
 # Create an Android app with Blockchain Integration
 
-![](docs/architecture.png)
+In this code pattern, we will create an Android app that tracks the user steps with Blockchain capabalities using Kubernetes. The users are registered to the Blockchain network anonymously and gets rewarded with some "coins" for the steps they take. The users can trade their coins for some swag and these transactions are executed in the Blockchain network. This Android app was used in KubeCon Europe 2018.
+
+This code pattern is for developers who wish to provide data anonymity and security to their users. Their users will be more confident to use their app if it gives them more control over their privacy. The developers can also extend the pattern to use the backend from different platforms.
+
+When you have completed this code pattern, you will understand how to:
+
+* Build a native Android app and use Google Fit for its steps data
+* Deploy a Blockchain Network in Kubernetes
+* Integrate the Android app with the Blockchain network
+
 ## Flow
+
+![](docs/architecture.png)
 
 1. The REST API is how the mobile app will interact with the blockchain network. The API will acknowledge the request and the mobile app will receive a unique key (random numbers and letters) which will be used to get the blockchain’s response later.
 2. The API just stores the request in a queue in RabbitMQ. The queue has 2 channels, which are for the user (Fitcoin org) and the seller (Shop org). The requests can either be:
