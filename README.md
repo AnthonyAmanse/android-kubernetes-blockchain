@@ -49,13 +49,13 @@ Install [Android Studio](https://developer.android.com/studio/).
 
 # Steps
 
-### Clone the repo
+### 1. Clone the repo
 
 ```
 $ git clone https://github.com/IBM/android-kubernetes-blockchain
 ```
 
-### Create IBM Cloud services
+### 2. Create IBM Cloud services
 
 Create the following services:
 
@@ -64,7 +64,7 @@ Create the following services:
 * [Compose for RabbitMQ](https://console.bluemix.net/catalog/services/compose-for-rabbitmq)
 * [Compose for Redis](https://console.bluemix.net/catalog/services/compose-for-redis)
 
-### Configure the Blockchain Network
+### 3. Configure the Blockchain Network
 
 * Get your Compose for RabbitMQ and Redis credentials in your IBM Cloud Dashboard
 
@@ -137,7 +137,7 @@ data:
 ...
 ```
 
-### Deploy the Blockchain Network in Kubernetes
+### 4. Deploy the Blockchain Network in Kubernetes
 
 * Change directory
 
@@ -275,8 +275,78 @@ $ curl $URL/api/results/RESULT_ID
 
 * Well done! Your blockchain network is ready to be integrated with the Android app. Proceed to the next step to deploy more Microservices that are needed for the mobile app.
 
-### Configure and Deploy Microservices in Kubernetes
+### 5. Configure and Deploy Microservices in Kubernetes
 
-### Configure the Android app
+* Build and push the Docker images. These services are used by the Android app. The android app gets its leaderboards and random user names and avatars from these services.
 
-### Test the Android app
+```
+# Go back to the root directory of the repository.
+
+$ cd containers/
+
+$ docker build -t $DOCKERHUB_USERNAME/leaderboard:latest leaderboard/
+$ docker build -t $DOCKERHUB_USERNAME/mobile-assets:latest mobile-assets/
+$ docker build -t $DOCKERHUB_USERNAME/registeree-api:latest registeree-api/
+
+$ docker push $DOCKERHUB_USERNAME/leaderboard:latest
+$ docker push $DOCKERHUB_USERNAME/mobile-assets:latest
+$ docker push $DOCKERHUB_USERNAME/registeree-api:latest
+```
+
+* Configure the yaml files to use your MongoDB instance. Get the certificate and URL in your Compose for MongoDB dashboard.
+
+![mongo credentials](docs/mongo-credentials.png)
+
+![certificate](docs/mongo-certificate.png)
+
+* Encode the certificate in base64. You can do it in the terminal:
+
+```
+$ echo -n "< Paste the certificate here>" | base64
+
+# output would be like
+# LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURlVENDQW1HZ0F3SUJBZ0lFV3V0Z...
+```
+
+* Paste the output in `mongo-cert-secret.yaml`
+
+```
+...
+data:
+  mongo.cert: 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURlVENDQW1HZ0F3SUJBZ0lFV3V0Z...'
+...
+```
+
+* Add the MongoDB URL in `leaderboard-api.yaml`, `mobile-assets.yaml`, `registeree-api.yaml` in the environment variable of `MONGODB_URL`
+
+```
+...
+env:
+  - name: MONGODB_URL
+    value: 'mongodb://admin:QWERTY@sl-us-south-1-po...'
+...
+```
+
+* You would also want to update the images declared in the files `leaderboard-api.yaml`, `mobile-assets.yaml` and `registeree-api.yaml`.
+
+```
+...
+  containers:
+    - image: <the corresponding image name that you have built>
+...
+```
+
+* Deploy the microservices in kubernetes
+
+```
+$ kubectl apply -f mongo-cert-secret.yaml
+$ kubectl apply -f leaderboard-api.yaml
+$ kubectl apply -f mobile-assets.yaml
+$ kubectl apply -f registeree-api.yaml
+```
+
+* The 3 microservices should now be running. You could check by doing `kubectl get pods`
+
+### 6. Configure the Android app
+
+### 7. Test the Android app
