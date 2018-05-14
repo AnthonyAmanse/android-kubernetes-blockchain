@@ -350,13 +350,16 @@ env:
 * Deploy the microservices in kubernetes
 
 ```
+# apply the certificate as a kubernetes secret
 $ kubectl apply -f mongo-cert-secret.yaml
+
+# deploy the microservices
 $ kubectl apply -f leaderboard-api.yaml
 $ kubectl apply -f mobile-assets.yaml
 $ kubectl apply -f registeree-api.yaml
 ```
 
-* The 3 microservices should now be running. You could check by doing `kubectl get pods`
+* The 3 microservices above should now be running. You could check by doing `kubectl get pods`
 
 ### 6. Configure the Android app
 
