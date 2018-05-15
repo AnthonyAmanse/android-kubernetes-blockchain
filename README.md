@@ -361,6 +361,56 @@ $ kubectl apply -f registeree-api.yaml
 
 * The 3 microservices above should now be running. You could check by doing `kubectl get pods`
 
-### 6. Configure the Android app
+### 6. Expose the backend with Kubernetes Ingress
 
-### 7. Test the Android app
+* You would want to expose the backend you deployed so that the Android app can communicate with it. With Kubernetes Ingress, this would allow you to expose these microservices. You can use the provided Ingress Subdomain that came with the IBM Cloud Container Service.
+
+```
+$ bx cs cluster-get <Your cluster name here>
+
+# You should look for these values
+# ..
+# Ingress Subdomain:	anthony-blockchain.us-south.containers.mybluemix.net
+# Ingress Secret:		anthony-blockchain
+# ..
+```
+
+* Modify `ingress-prod.yaml` to use the provided subdomain you have
+
+```
+...
+spec:
+  tls:
+  - hosts:
+    - <Your-ingress-SUBDOMAIN-here>
+    secretName: <Your-ingress-SECRET-here>
+  backend:
+    serviceName: mobile-assets
+    servicePort: 80
+  rules:
+  - host: <Your-ingress-SUBDOMAIN-here>
+...
+```
+
+* Apply the Kubernetes Ingress resource
+
+```
+$ kubectl apply -f ingress-prod.yaml
+```
+
+### 7. Configure the Android app
+
+* Open the `android` folder in the Android Studio IDE. The project is configured to do REST calls to the Kubernetes backend. You would need to change the `BACKEND_URL` variables to your own **Ingress Subdomain** in these Java files:
+  * ContractListAdapter
+  * LeaderboardsFragment
+  * MainActivity
+  * QuantitySelection
+  * ShopFragment
+  * TechFragment
+  * UserFragment
+  
+![java files](docs/java-files.png)
+
+
+
+### 8. Test the Android app
