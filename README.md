@@ -408,9 +408,15 @@ $ kubectl apply -f ingress-prod.yaml
   * ShopFragment
   * TechFragment
   * UserFragment
-  
-![java files](docs/java-files.png)
 
+<img src="docs/java-files.png" alt="alt text" width="50%" height="50%">
 
+> The line would look something like:
+
+```java
+...
+String BACKEND_URL = "https://anthony-blockchain.us-south.containers.mybluemix.net";
+...
+```
 
 ### 8. Test the Android app
