@@ -420,3 +420,36 @@ String BACKEND_URL = "https://anthony-blockchain.us-south.containers.mybluemix.n
 ```
 
 ### 8. Test the Android app
+
+* You could test the android app either in the [emulator](https://developer.android.com/studio/run/emulator) in Android Studio or on a [real device](https://developer.android.com/studio/run/device). To test the tracking of steps, you would need a real device and an [OAuth 2.0 Client ID](https://developers.google.com/fit/android/get-api-key). This authorizes your app to use the Google Fit API.
+
+![]()
+
+* Once you open the app, you are automatically enrolled in the Blockchain network. If you go to the Shop view, you'll also notice that it doesn't have any Swags available for trade. You would need to register a seller and add some products.
+
+```
+$ export URL="https://<Your-ingress-subdomain>"
+$ curl -H "Content-Type: application/json" -X POST -d '{"type":"enroll","queue":"seller_queue","params":{}}' "$URL/api/execute"
+
+# you will get something in the format of
+# {"status":"success","resultId":"dfb6ef43-4eb2-467d-8c05-93ed5d0b517f"}
+# using the result ID you got above, do:
+
+$ curl "$URL/api/results/dfb6ef43-4eb2-467d-8c05-93ed5d0b517f"
+
+# You will get:
+# { "status":"done",
+#   "result": "{\"message\":\"success\",\"result\":{\"user\":\"351a9993-c204-4f75-a38c-ccaba49929bc\",\"txId\":\"15698a529b7c1bc98725cb61177c621bac9de03347567c405bd68e1ff96b120a\"}}"}
+
+# The ID of the seller would be 351a9993-c204-4f75-a38c-ccaba49929bc
+```
+
+* And now, add some products using the seller ID
+
+```
+$ export SELLER_ID=<seller ID you got from step above>
+
+$ curl -H "Content-Type: application/json" -X POST -d '{"type":"invoke","queue":"seller_queue","params":{"userId": "'"$SELLER_ID"'", "fcn":"createProduct","args":["'"$SELLER_ID"'","eye-sticker","Eye sticker","100","1"]}}' "$URL/api/execute"
+$ curl -H "Content-Type: application/json" -X POST -d '{"type":"invoke","queue":"seller_queue","params":{"userId": "'"$SELLER_ID"'", "fcn":"createProduct","args":["'"$SELLER_ID"'","bee-sticker","Bee sticker","100","1"]}}' "$URL/api/execute"
+$ curl -H "Content-Type: application/json" -X POST -d '{"type":"invoke","queue":"seller_queue","params":{"userId": "'"$SELLER_ID"'", "fcn":"createProduct","args":["'"$SELLER_ID"'","em-sticker","M sticker","100","1"]}}' "$URL/api/execute"
+```
