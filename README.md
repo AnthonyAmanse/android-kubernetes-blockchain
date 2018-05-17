@@ -421,9 +421,9 @@ String BACKEND_URL = "https://anthony-blockchain.us-south.containers.mybluemix.n
 
 ### 8. Test the Android app
 
-* You could test the android app either in the [emulator](https://developer.android.com/studio/run/emulator) in Android Studio or on a [real device](https://developer.android.com/studio/run/device). To test the tracking of steps, you would need a real device and an [OAuth 2.0 Client ID](https://developers.google.com/fit/android/get-api-key). This authorizes your app to use the Google Fit API.
+* You could test the android app either in an [emulator](https://developer.android.com/studio/run/emulator) in Android Studio or on a [real device](https://developer.android.com/studio/run/device). To test the tracking of steps, you would need a real device and an [OAuth 2.0 Client ID](https://developers.google.com/fit/android/get-api-key). This authorizes your app to use the Google Fit API.
 
-![]()
+![](docs/android-screen.png)
 
 * Once you open the app, you are automatically enrolled in the Blockchain network. If you go to the Shop view, you'll also notice that it doesn't have any Swags available for trade. You would need to register a seller and add some products.
 
@@ -453,3 +453,21 @@ $ curl -H "Content-Type: application/json" -X POST -d '{"type":"invoke","queue":
 $ curl -H "Content-Type: application/json" -X POST -d '{"type":"invoke","queue":"seller_queue","params":{"userId": "'"$SELLER_ID"'", "fcn":"createProduct","args":["'"$SELLER_ID"'","bee-sticker","Bee sticker","100","1"]}}' "$URL/api/execute"
 $ curl -H "Content-Type: application/json" -X POST -d '{"type":"invoke","queue":"seller_queue","params":{"userId": "'"$SELLER_ID"'", "fcn":"createProduct","args":["'"$SELLER_ID"'","em-sticker","M sticker","100","1"]}}' "$URL/api/execute"
 ```
+
+> Learn more about the chaincode functions for this project [here](containers/blockchain/ccfunctions.md)
+
+* The app is configured to reward users with 1 Kubecoin for every 100 steps they take.
+
+# Links
+
+* [Hyperledger Fabric Node SDK](https://fabric-sdk-node.github.io/): Node SDK to interact with the Hyperledger Fabric network.
+* [Google Fit](https://developers.google.com/fit): Give your app the capability to get and update fitness information.
+* [iOS version](https://github.com/IBM/kubecoin): A native iOS version of the app ineracting with the Hyperledger Fabric network.
+
+# Learn more
+
+* **Hyperledger Fabric Tutorials** Want to learn more about Hyperledger Fabric? Check out some [tutorials](https://hyperledger-fabric.readthedocs.io/en/release-1.1/tutorials.html).
+* **Kubernetes on IBM Cloud**: Deploy and manage your containers in [Kubernetes on IBM Cloud](https://www.ibm.com/cloud/container-service)
+
+# License
+[Apache 2.0](LICENSE)
