@@ -89,12 +89,18 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$APPLICATION_HOME_DIR$/bin/D:\ghiea\Documents\GitHub\AnthonyAmanse\indoor-map-iphone-app\secretmap\images\distance@2x.png" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/notification.png" />
+                                      <entry key="outputName" value="notification_icon" />
                                     </map>
                                   </option>
                                 </PersistentState>
                               </value>
                             </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="NOTIFICATION" />
                           </map>
                         </option>
                       </PersistentState>
