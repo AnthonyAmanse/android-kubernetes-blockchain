@@ -2,12 +2,15 @@ package com.amanse.anthony.fitcoinandroid;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -30,6 +33,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.ibm.mobilefirstplatform.clientsdk.android.core.api.BMSClient;
+import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPPush;
+import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPPushException;
+import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPPushNotificationListener;
+import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPPushResponseListener;
+import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPSimplePushNotification;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     public RequestQueue queue;
     Gson gson = new Gson();
     private Fragment currentTab;
+
+    MFPPush push = MFPPush.getInstance();
+    MFPPushNotificationListener notificationListener;
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -87,6 +99,36 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.frame_layout, TechFragment.newInstance());
         transaction.commit();
 
+        // Initialize push notification
+        BMSClient.getInstance().initialize(this, BMSClient.REGION_US_SOUTH);
+        push.initialize(getApplicationContext(), "97e7d081-61cd-4708-9d71-88efa0ff90ef", "69a4a1e2-1863-4167-9dcd-9458200f98e3");
+        notificationListener = new MFPPushNotificationListener() {
+
+            @Override
+            public void onReceive (final MFPSimplePushNotification message){
+                // Handle Push Notification
+                Log.d(TAG, message.toString());
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        new android.app.AlertDialog.Builder(MainActivity.this)
+                                .setTitle("Kubecoin")
+                                .setMessage(message.getAlert())
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                    }
+                                })
+                                .show();
+                    }
+                });
+//            showNotification(message.getAlert());
+            }
+        };
+
+
+        // Not being used anymore, using IBM Cloud Push Notification SDK
+        // Create notification channel
+//        createNotificationChannel();
+
         // request queue
         queue = Volley.newRequestQueue(this);
 
@@ -102,11 +144,90 @@ public class MainActivity extends AppCompatActivity {
         // Check if user is already enrolled
         if (sharedPreferences.contains("BlockchainUserId")) {
             Log.d(TAG, "User already registered.");
+            registerNotification(sharedPreferences.getString("BlockchainUserId","none"));
         } else {
                 // register the user
                 registerUser();
         }
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(push != null) {
+            Log.d(TAG, "Listening...");
+            push.listen(notificationListener);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (push != null) {
+            Log.d(TAG, "Paused...");
+            push.hold();
+        }
+    }
+
+
+
+    public void registerNotification(String userId) {
+        push.registerDeviceWithUserId(userId, new MFPPushResponseListener<String>() {
+
+            @Override
+            public void onSuccess(String response) {
+                //handle successful device registration here
+                Log.d(TAG, response);
+                push.listen(notificationListener);
+            }
+
+            @Override
+            public void onFailure(MFPPushException ex) {
+                //handle failure in device registration here
+                Log.d(TAG, ex.getErrorMessage());
+            }
+        });
+    }
+
+    // No longer need this; Using IBM Cloud Push Notification SDK instead
+//    private void showNotification(String alert) {
+//        Intent i = new Intent(this, MainActivity.class);
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1,
+//                i, PendingIntent.FLAG_UPDATE_CURRENT);
+//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+//                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//
+//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "Announcements")
+//                .setSmallIcon(R.mipmap.kube_icon_foreground)
+//                .setContentTitle("Kubecoin")
+//                .setContentText(alert)
+//                .setContentIntent(pendingIntent)
+//                .setAutoCancel(true)
+//                .setPriority(NotificationCompat.PRIORITY_HIGH);
+//
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//
+//        // notificationId is a unique int for each notification that you must define
+//        notificationManager.notify(Integer.parseInt(new SimpleDateFormat("ddHHmmss",  Locale.US).format(new Date())), mBuilder.build());
+//    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Announcements";
+            String description = "Announcements for DockerCon";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("Announcements", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 
     public void registerUser() {
         try {
@@ -180,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         sendToMongo(resultOfEnroll.result.user);
+        registerNotification(resultOfEnroll.result.user);
 
         // send user id to registeree-api
 
@@ -242,5 +364,4 @@ public class MainActivity extends AppCompatActivity {
         });
         popupMenu.show();
     }
-
 }
