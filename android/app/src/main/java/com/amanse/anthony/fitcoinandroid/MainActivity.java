@@ -120,14 +120,8 @@ public class MainActivity extends AppCompatActivity {
                                 .show();
                     }
                 });
-//            showNotification(message.getAlert());
             }
         };
-
-
-        // Not being used anymore, using IBM Cloud Push Notification SDK
-        // Create notification channel
-//        createNotificationChannel();
 
         // request queue
         queue = Volley.newRequestQueue(this);
@@ -188,46 +182,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    // No longer need this; Using IBM Cloud Push Notification SDK instead
-//    private void showNotification(String alert) {
-//        Intent i = new Intent(this, MainActivity.class);
-//
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1,
-//                i, PendingIntent.FLAG_UPDATE_CURRENT);
-//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-//                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//
-//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "Announcements")
-//                .setSmallIcon(R.mipmap.kube_icon_foreground)
-//                .setContentTitle("Kubecoin")
-//                .setContentText(alert)
-//                .setContentIntent(pendingIntent)
-//                .setAutoCancel(true)
-//                .setPriority(NotificationCompat.PRIORITY_HIGH);
-//
-//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-//
-//        // notificationId is a unique int for each notification that you must define
-//        notificationManager.notify(Integer.parseInt(new SimpleDateFormat("ddHHmmss",  Locale.US).format(new Date())), mBuilder.build());
-//    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Announcements";
-            String description = "Announcements for DockerCon";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("Announcements", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
 
     public void registerUser() {
         try {
