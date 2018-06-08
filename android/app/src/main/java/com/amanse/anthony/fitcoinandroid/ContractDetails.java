@@ -65,6 +65,10 @@ public class ContractDetails extends AppCompatActivity {
                 productImage.setImageResource(R.drawable.kubecoin_shirt);
                 productImage.setTag(R.drawable.kubecoin_shirt);
                 break;
+            case "popsocket":
+                productImage.setImageResource(R.drawable.popsocket);
+                productImage.setTag(R.drawable.popsocket);
+                break;
             default:
                 productImage.setImageResource(R.drawable.ic_footprint);
                 productImage.setTag(R.drawable.ic_footprint);
