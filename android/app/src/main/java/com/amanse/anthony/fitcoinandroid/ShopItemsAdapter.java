@@ -43,7 +43,7 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
         ShopItemModel shopItemModel = shopItemModelList.get(position);
 
         String quantityLeftConcatenate = String.valueOf(shopItemModel.getQuantityLeft()) + " left";
-        String priceConcatenate = String.valueOf(shopItemModel.getPrice()) + " coins each";
+        String priceConcatenate = String.valueOf(shopItemModel.getPrice()) + " kubecoins each";
 
         holder.cardView.setTag(shopItemModel);
         holder.cardView.setOnClickListener(this);

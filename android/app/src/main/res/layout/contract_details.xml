@@ -80,7 +80,7 @@
             android:id="@+id/totalPriceLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="total coins"
+            android:text="total kubecoins"
             android:textAlignment="center"
             app:fontFamily="sans-serif-thin" />
 
