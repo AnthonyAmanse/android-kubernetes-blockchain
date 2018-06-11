@@ -89,7 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/claimButton"
         android:layout_centerHorizontal="true"
-        android:text="total coins"
+        android:text="total kubecoins"
         android:textSize="18sp"
         android:textStyle="bold"
         app:fontFamily="sans-serif-condensed" />
