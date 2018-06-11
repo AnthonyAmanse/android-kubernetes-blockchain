@@ -32,3 +32,8 @@
   public static *** d(...);
   public static *** e(...);
 }
+
+-ignorewarnings
+-keep class * {
+    public private *;
+}
