@@ -321,7 +321,9 @@ public class ShopFragment extends Fragment {
                                         // insert ui views here
                                         Log.d(TAG, gson.toJson(shopItemModels));
                                         shopDataModels.clear();
-                                        shopDataModels.addAll(Arrays.asList(shopItemModels));
+                                        if (shopItemModels != null) {
+                                            shopDataModels.addAll(Arrays.asList(shopItemModels));
+                                        }
                                         adapter.notifyDataSetChanged();
                                     } else {
                                         // if blockchain fails to process for some reason

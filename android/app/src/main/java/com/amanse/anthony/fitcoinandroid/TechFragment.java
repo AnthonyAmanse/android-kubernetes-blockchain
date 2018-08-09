@@ -614,7 +614,11 @@ public class TechFragment extends Fragment {
                     public void onResponse(JSONArray response) {
                         articles.clear();
                         ArticleModel[] articleModels = gson.fromJson(response.toString(), ArticleModel[].class);
-                        articles.addAll(Arrays.asList(articleModels));
+                        if (articleModels.length != 0) {
+                            articles.addAll(Arrays.asList(articleModels));
+                        } else {
+                            articles.addAll(articlesDefault);
+                        }
                         adapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
