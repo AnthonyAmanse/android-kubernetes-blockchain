@@ -46,7 +46,8 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "FITNESS_API";
-    private static final String BACKEND_URL = "https://anthony-blockchain.us-south.containers.mybluemix.net";
+    private static final String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+    public String EVENT_NAME="cfsummit";
     public RequestQueue queue;
     Gson gson = new Gson();
     private Fragment currentTab;
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void registerUser() {
         try {
-            JSONObject params = new JSONObject("{\"type\":\"enroll\",\"queue\":\"user_queue\",\"params\":{}}");
+            JSONObject params = new JSONObject("{\"type\":\"enroll\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{}}");
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/api/execute", params,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             JSONObject params = new JSONObject("{\"registereeId\":" + userId + ",\"steps\":0,\"calories\":0,\"device\":\"android\"}");
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/registerees/add" , params,
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/registerees/" + this.EVENT_NAME + "/add" , params,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {

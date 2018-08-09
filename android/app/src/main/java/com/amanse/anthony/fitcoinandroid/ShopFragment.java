@@ -47,7 +47,8 @@ public class ShopFragment extends Fragment {
     TextView fitcoinsBalance, pendingCharges;
 
     private static final String TAG = "FITNESS_SHOP_FRAG";
-    private static final String BACKEND_URL = "https://anthony-blockchain.us-south.containers.mybluemix.net";
+    private static final String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+    public String EVENT_NAME="cfsummit";
     public String userId;
     public boolean isEnrolled;
 
@@ -146,7 +147,7 @@ public class ShopFragment extends Fragment {
 
     public void getStateOfUser(String userId, final int failedAttempts) {
         try {
-            JSONObject params = new JSONObject("{\"type\":\"query\",\"queue\":\"user_queue\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"getState\", \"args\":[" + userId + "]}}");
+            JSONObject params = new JSONObject("{\"type\":\"query\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"getState\", \"args\":[" + userId + "]}}");
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/api/execute", params,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -176,7 +177,7 @@ public class ShopFragment extends Fragment {
 
     public void getAllUserContracts(String userId, final int failedAttempts) {
         try {
-            JSONObject params = new JSONObject("{\"type\":\"query\",\"queue\":\"user_queue\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"getAllUserContracts\", \"args\":[" + userId + "]}}");
+            JSONObject params = new JSONObject("{\"type\":\"query\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"getAllUserContracts\", \"args\":[" + userId + "]}}");
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/api/execute", params,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -207,7 +208,7 @@ public class ShopFragment extends Fragment {
 
     public void getProductsForSale(String userId, final int failedAttempts) {
         try {
-            JSONObject params = new JSONObject("{\"type\":\"query\",\"queue\":\"user_queue\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"getProductsForSale\", \"args\":[]}}");
+            JSONObject params = new JSONObject("{\"type\":\"query\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"getProductsForSale\", \"args\":[]}}");
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/api/execute", params,
                     new Response.Listener<JSONObject>() {
                         @Override

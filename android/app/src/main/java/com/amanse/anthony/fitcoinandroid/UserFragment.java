@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "FITNESS_API_USER_FRAG";
-    private static final String BACKEND_URL = "https://anthony-blockchain.us-south.containers.mybluemix.net";
+    private static final String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
     private static final int REQUEST_OAUTH_REQUEST_CODE = 0x1001;
     private static final int FITCOINS_STEPS_CONVERSION = 100;
 
@@ -84,6 +84,7 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public Runnable refreshRunnable;
     public Handler handler = new Handler();
+    public String EVENT_NAME="cfsummit";
 
     Gson gson = new Gson();
 
@@ -422,7 +423,7 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void getStateOfUser(String userId, final int failedAttempts) {
         try {
-            JSONObject params = new JSONObject("{\"type\":\"query\",\"queue\":\"user_queue\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"getState\", \"args\":[" + userId + "]}}");
+            JSONObject params = new JSONObject("{\"type\":\"query\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"getState\", \"args\":[" + userId + "]}}");
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/api/execute", params,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -514,7 +515,7 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void sendStepsToFitchain(final String userId, final int numberOfStepsToSend) {
         try {
-            JSONObject params = new JSONObject("{\"type\":\"invoke\",\"queue\":\"user_queue\",\"params\":{\"userId\":\"" + userId + "\",\"fcn\":\"generateFitcoins\",\"args\":[" + userId + ",\"" + String.valueOf(numberOfStepsToSend)+ "\"]}}");
+            JSONObject params = new JSONObject("{\"type\":\"invoke\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{\"userId\":\"" + userId + "\",\"fcn\":\"generateFitcoins\",\"args\":[" + userId + ",\"" + String.valueOf(numberOfStepsToSend)+ "\"]}}");
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/api/execute", params,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -553,7 +554,7 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     public void sendStepsToMongo(String userId, int numberOfStepsToSend) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, BACKEND_URL + "/registerees/update/" + userId + "/steps/" + String.valueOf(numberOfStepsToSend),
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, BACKEND_URL + "/registerees/" + this.EVENT_NAME + "/update/" + userId + "/steps/" + String.valueOf(numberOfStepsToSend),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

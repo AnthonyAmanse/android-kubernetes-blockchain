@@ -29,8 +29,9 @@ import java.util.Arrays;
  */
 public class TechFragment extends Fragment {
 
-    public String BACKEND_URL="https://anthony-blockchain.us-south.containers.mybluemix.net";
+    public String BACKEND_URL="https://cloudcoin.us-south.containers.appdomain.cloud";
     public String TAG="FITNESS_TECH_FRAG";
+    public String EVENT_NAME="cfsummit";
 
     ArrayList<ArticleModel> articles;
     ArrayList<ArticleModel> articlesDefault;
@@ -608,7 +609,7 @@ public class TechFragment extends Fragment {
     }
 
     public void requestPages() {
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, BACKEND_URL + "/pages", null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, BACKEND_URL + "/pages/" + this.EVENT_NAME , null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {

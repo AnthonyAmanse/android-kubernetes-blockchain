@@ -32,7 +32,8 @@ import org.json.JSONObject;
 public class QuantitySelection extends AppCompatActivity {
 
     private static final String TAG = "FITNESS_QUANTITY";
-    private static final String BACKEND_URL = "https://anthony-blockchain.us-south.containers.mybluemix.net";
+    private static final String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+    public String EVENT_NAME="cfsummit";
 
     ImageView productImage;
     TextView productName;
@@ -176,7 +177,7 @@ public class QuantitySelection extends AppCompatActivity {
 
     public void purchaseItem() {
         try {
-            JSONObject params = new JSONObject("{\"type\":\"invoke\",\"queue\":\"user_queue\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"makePurchase\", \"args\":[" + userId + "," + product.getSellerId() + "," + product.getProductId() + ",\"" + quantity.getText() + "\"]}}");
+            JSONObject params = new JSONObject("{\"type\":\"invoke\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"makePurchase\", \"args\":[" + userId + "," + product.getSellerId() + "," + product.getProductId() + ",\"" + quantity.getText() + "\"]}}");
             Log.d(TAG, params.toString());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/api/execute", params,
                     new Response.Listener<JSONObject>() {

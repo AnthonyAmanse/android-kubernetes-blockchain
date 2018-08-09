@@ -41,7 +41,8 @@ public class LeaderboardsFragment extends Fragment {
     RequestQueue queue;
     Gson gson;
     String TAG = "FITNESS_LEADERBOARDS";
-    String BACKEND_URL = "https://anthony-blockchain.us-south.containers.mybluemix.net";
+    String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+    public String EVENT_NAME="cfsummit";
 
     ArrayList<UserInfoModel> userInfoModels;
 
@@ -138,7 +139,7 @@ public class LeaderboardsFragment extends Fragment {
     }
 
     public void getUserFromMongo(String userId) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/registerees/info/" + userId , null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/registerees/" + this.EVENT_NAME + "/info/" + userId , null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -157,7 +158,7 @@ public class LeaderboardsFragment extends Fragment {
     }
 
     public void getUserPosition(String steps) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/leaderboard/position/steps/" + steps , null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/leaderboard/" + this.EVENT_NAME + "/position/steps/" + steps , null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -178,7 +179,7 @@ public class LeaderboardsFragment extends Fragment {
     }
 
     public void getLeaderboardTop(int number) {
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, BACKEND_URL + "/leaderboard/top/" + String.valueOf(number) , null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, BACKEND_URL + "/leaderboard/" + this.EVENT_NAME + "/top/" + String.valueOf(number) , null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -198,7 +199,7 @@ public class LeaderboardsFragment extends Fragment {
     }
 
     public void getStatus(final int position) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/registerees/totalUsers" , null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/registerees/"  + this.EVENT_NAME + "/totalUsers" , null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

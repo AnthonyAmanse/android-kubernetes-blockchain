@@ -32,7 +32,9 @@ public class ContractListAdapter extends RecyclerView.Adapter<ContractListAdapte
     private Context context;
     private ArrayList<ContractModel> contractModels;
     private static String TAG = "FITNESS_CONTRACT_LIST";
-    private static String BACKEND_URL = "https://anthony-blockchain.us-south.containers.mybluemix.net";
+    private static String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+
+    public String EVENT_NAME="cfsummit";
 
     RequestQueue queue;
 
@@ -152,7 +154,7 @@ public class ContractListAdapter extends RecyclerView.Adapter<ContractListAdapte
 
     public void declineContract(ContractModel contractModel) {
         try {
-            JSONObject params = new JSONObject("{\"type\":\"invoke\",\"queue\":\"user_queue\",\"params\":{\"userId\":\"" + contractModel.getUserId() + "\", \"fcn\":\"transactPurchase\", \"args\":[" + contractModel.getUserId() + "," + contractModel.getContractId() + ",\"declined\"]}}");
+            JSONObject params = new JSONObject("{\"type\":\"invoke\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{\"userId\":\"" + contractModel.getUserId() + "\", \"fcn\":\"transactPurchase\", \"args\":[" + contractModel.getUserId() + "," + contractModel.getContractId() + ",\"declined\"]}}");
             Log.d(TAG, params.toString());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/api/execute", params,
                     new Response.Listener<JSONObject>() {
