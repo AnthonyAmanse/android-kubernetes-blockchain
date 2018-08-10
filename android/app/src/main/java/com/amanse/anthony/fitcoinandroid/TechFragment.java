@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -39,6 +40,7 @@ public class TechFragment extends Fragment {
     ArticlePagerAdapter adapter;
     public RequestQueue queue;
     Gson gson = new Gson();
+    LocalPreferences localPreferences;
 
     public TechFragment() {
         // Required empty public constructor
@@ -52,6 +54,8 @@ public class TechFragment extends Fragment {
 //        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         View rootView = inflater.inflate(R.layout.fragment_tech, container, false);
 
+        localPreferences = new LocalPreferences(getActivity());
+
         // request queue
         queue = Volley.newRequestQueue((AppCompatActivity) getActivity());
 
@@ -59,6 +63,14 @@ public class TechFragment extends Fragment {
 
         articles = new ArrayList<>();
         articlesDefault = new ArrayList<>();
+        boolean isAnEventSelected = false;
+
+        if (localPreferences.getCurrentEventSelected() == null || localPreferences.getCurrentEventSelected().equals("")) {
+            isAnEventSelected = false;
+        } else {
+            Log.d(TAG, "Your selected event is: " + localPreferences.getCurrentEventSelected());
+            isAnEventSelected = true;
+        }
 
         // default data in case no internet or server down
         articlesDefault.add(gson.fromJson("{\"page\":1,\"link\":\"https://developer.ibm.com/code/2018/03/16/building-a-secret-map-an-experiment-in-the-economy-of-things/\",\"title\":\"Kubecon\",\"subtitle\":\"2018\",\"image\":\"kubecoin logo\",\"subtext\":\"\",\"description\":\"\",\"imageEncoded\":\"iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAIAAAD2HxkiAAAACXBIWXMAAAsSAAALEgHS3X78AAAg\n" +
@@ -591,7 +603,7 @@ public class TechFragment extends Fragment {
                 "ECUAAAAASUVORK5CYII=\n" +
                 "\"}",ArticleModel.class));
 
-        adapter = new ArticlePagerAdapter(rootView.getContext(), articles);
+        adapter = new ArticlePagerAdapter(rootView.getContext(), articles, isAnEventSelected);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
         requestPages();
