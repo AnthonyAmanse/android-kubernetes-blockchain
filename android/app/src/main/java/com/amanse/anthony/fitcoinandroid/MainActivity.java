@@ -26,10 +26,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 
+import com.amanse.anthony.fitcoinandroid.Config.BackendURL;
+import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
+import com.amanse.anthony.fitcoinandroid.Config.SelectedEventPreferences;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
@@ -40,13 +44,14 @@ import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPPushNotificatio
 import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPPushResponseListener;
 import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPSimplePushNotification;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "FITNESS_API";
-    private static final String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+    private static final String BACKEND_URL = BackendURL.DEFAULT_URL;
     public String EVENT_NAME="cfsummit";
     public RequestQueue queue;
     Gson gson = new Gson();
@@ -55,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
     MFPPush push = MFPPush.getInstance();
     MFPPushNotificationListener notificationListener;
 
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    LocalPreferences localPreferences;
+    SelectedEventPreferences selectedEventPreferences;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -124,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        // request queue
+        // initialize request queue
         queue = Volley.newRequestQueue(this);
 
         // check if location is permitted
@@ -134,16 +139,36 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // initialize shared preferences - persistent data
-        sharedPreferences = this.getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
+//        sharedPreferences = this.getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
 
         // Check if user is already enrolled
-        if (sharedPreferences.contains("BlockchainUserId")) {
-            Log.d(TAG, "User already registered.");
-            registerNotification(sharedPreferences.getString("BlockchainUserId","none"));
-        } else {
-                // register the user
-                registerUser();
+//        if (sharedPreferences.contains("BlockchainUserId")) {
+//            Log.d(TAG, "User already registered.");
+//            registerNotification(sharedPreferences.getString("BlockchainUserId","none"));
+//        } else {
+//                // register the user
+//                registerUser();
+//        }
+        localPreferences = new LocalPreferences(this);
+        if (localPreferences.getCurrentEventSelected() != null) {
+            this.EVENT_NAME = localPreferences.getCurrentEventSelected();
+            selectedEventPreferences = new SelectedEventPreferences(this, this.EVENT_NAME);
         }
+    }
+
+    protected void onEventSelected() {
+        this.EVENT_NAME = localPreferences.getCurrentEventSelected();
+        selectedEventPreferences = new SelectedEventPreferences(this, this.EVENT_NAME);
+        String userId = selectedEventPreferences.getBlockchainUserId();
+        if (userId == null) {
+            registerUser();
+        } else {
+            registerNotification(userId);
+        }
+
+        // check if a user id is present in selected event preferences
+            // if not - do registerUser
+            // else registerNotification
     }
 
     @Override
@@ -249,12 +274,7 @@ public class MainActivity extends AppCompatActivity {
         ResultOfEnroll resultOfEnroll = gson.fromJson(result, ResultOfEnroll.class);
         Log.d(TAG, resultOfEnroll.result.user);
 
-
-        editor = sharedPreferences.edit();
-
-        editor.putString("BlockchainUserId",resultOfEnroll.result.user);
-        editor.apply();
-
+        selectedEventPreferences.setBlockchainUserId(resultOfEnroll.result.user);
         sendToMongo(resultOfEnroll.result.user);
         registerNotification(resultOfEnroll.result.user);
 
@@ -275,9 +295,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendToMongo(String userId) {
-
-        editor = sharedPreferences.edit();
-
         try {
             JSONObject params = new JSONObject("{\"registereeId\":" + userId + ",\"steps\":0,\"calories\":0,\"device\":\"android\"}");
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/registerees/" + this.EVENT_NAME + "/add" , params,
@@ -286,8 +303,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onResponse(JSONObject response) {
 
                             // save the random name and png assigned to this user
-                            editor.putString("UserInfo", response.toString());
-                            editor.apply();
+                            selectedEventPreferences.setUserInfo(response.toString());
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -309,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.menu_privacy) {
-                    Uri uri = Uri.parse("https://github.com/AnthonyAmanse/fitcoin-android/blob/master/Privacy.md");
+                    Uri uri = Uri.parse(BackendURL.PRIVACY_POLICY_URL);
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
                     return true;
@@ -318,5 +334,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         popupMenu.show();
+    }
+
+    // move this to a new fragment...
+    public void testGetEvents() {
+        try {
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, BackendURL.EVENTS_URL , null,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            Log.d(TAG,response.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "That didn't work!");
+                }
+            });
+            queue.add(jsonArrayRequest);
+        } catch (Error e) {
+            e.printStackTrace();
+        }
     }
 }

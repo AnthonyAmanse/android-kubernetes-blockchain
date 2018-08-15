@@ -18,6 +18,9 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 
+import com.amanse.anthony.fitcoinandroid.Config.BackendURL;
+import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
+import com.amanse.anthony.fitcoinandroid.Config.SelectedEventPreferences;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,7 +50,7 @@ public class ShopFragment extends Fragment {
     TextView fitcoinsBalance, pendingCharges;
 
     private static final String TAG = "FITNESS_SHOP_FRAG";
-    private static final String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+    private static final String BACKEND_URL = BackendURL.DEFAULT_URL;
     public String EVENT_NAME="cfsummit";
     public String userId;
     public boolean isEnrolled;
@@ -55,6 +58,8 @@ public class ShopFragment extends Fragment {
     public RequestQueue queue;
 
     Gson gson = new Gson();
+    LocalPreferences localPreferences;
+    SelectedEventPreferences selectedEventPreferences;
 
 
     public ShopFragment() {
@@ -69,19 +74,27 @@ public class ShopFragment extends Fragment {
 //        actionBar.show();
 //        actionBar.setTitle("Shop");
 
-        SharedPreferences sharedPreferences = ((AppCompatActivity) getActivity()).getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
+        // TODO:
+        // Replace with Config Preference class
+//        SharedPreferences sharedPreferences = ((AppCompatActivity) getActivity()).getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
 
         // check if enrolled in blockchain network
-        if (sharedPreferences.contains("BlockchainUserId")) {
-            this.userId = sharedPreferences.getString("BlockchainUserId","Something went wrong...");
-            if (this.userId.equals("Something went wrong...")) {
-                this.isEnrolled = false;
-            } else {
-                this.isEnrolled = true;
-            }
-        } else {
-            this.isEnrolled = false;
-        }
+//        if (sharedPreferences.contains("BlockchainUserId")) {
+//            this.userId = sharedPreferences.getString("BlockchainUserId","Something went wrong...");
+//            if (this.userId.equals("Something went wrong...")) {
+//                this.isEnrolled = false;
+//            } else {
+//                this.isEnrolled = true;
+//            }
+//        } else {
+//            this.isEnrolled = false;
+//        }
+
+        localPreferences = new LocalPreferences(getActivity());
+        this.EVENT_NAME = localPreferences.getCurrentEventSelected();
+        selectedEventPreferences = new SelectedEventPreferences(getActivity(),localPreferences.getCurrentEventSelected());
+        this.userId = selectedEventPreferences.getBlockchainUserId();
+        this.isEnrolled = this.userId != null;
 
         // request queue
         queue = Volley.newRequestQueue((AppCompatActivity) getActivity());
@@ -113,6 +126,7 @@ public class ShopFragment extends Fragment {
                 Log.d(TAG, contractDataModels.size() + "");
 
                 // put contract models to next activity
+                intent.putExtra("EVENT_NAME",EVENT_NAME);
                 intent.putExtra("CONTRACT_MODELS_JSON",new Gson().toJson(contractDataModels.toArray(new ContractModel[contractDataModels.size()]),ContractModel[].class));
                 rootView.getContext().startActivity(intent);
             }

@@ -17,6 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.amanse.anthony.fitcoinandroid.Config.EventPreferences;
+import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
+import com.amanse.anthony.fitcoinandroid.Config.SelectedEventPreferences;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -86,6 +89,10 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public Handler handler = new Handler();
     public String EVENT_NAME="cfsummit";
 
+    LocalPreferences localPreferences;
+    SelectedEventPreferences selectedEventPreferences;
+    EventPreferences eventPreferences;
+
     Gson gson = new Gson();
 
     public UserFragment() {
@@ -115,32 +122,55 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         queue = Volley.newRequestQueue((AppCompatActivity) getActivity());
 
         // initialize shared preferences - persistent data
-        SharedPreferences sharedPreferences = ((AppCompatActivity) getActivity()).getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        SharedPreferences sharedPreferences = ((AppCompatActivity) getActivity()).getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // check if enrolled in blockchain network
-        if (sharedPreferences.contains("BlockchainUserId")) {
-            userIdFromStorage = sharedPreferences.getString("BlockchainUserId","Something went wrong...");
-            userId.setText(userIdFromStorage);
-            if (!userIdFromStorage.equals("Something went wrong...")) {
+//        if (sharedPreferences.contains("BlockchainUserId")) {
+//            userIdFromStorage = sharedPreferences.getString("BlockchainUserId","Something went wrong...");
+//            userId.setText(userIdFromStorage);
+//            if (!userIdFromStorage.equals("Something went wrong...")) {
+//                getStateOfUser(userIdFromStorage);
+//            }
+//        } else {
+//            userId.setText(R.string.notEnrolled);
+//        }
+
+        localPreferences = new LocalPreferences(getActivity());
+        eventPreferences = new EventPreferences(getActivity());
+        if (localPreferences.getCurrentEventSelected() != null) {
+            this.EVENT_NAME = localPreferences.getCurrentEventSelected();
+            selectedEventPreferences = new SelectedEventPreferences(getActivity(), this.EVENT_NAME);
+            userIdFromStorage = selectedEventPreferences.getBlockchainUserId();
+            if (userIdFromStorage != null) {
+                userId.setText(userIdFromStorage);
                 getStateOfUser(userIdFromStorage);
+            } else {
+                userId.setText(R.string.notEnrolled);
             }
         } else {
-            userId.setText(R.string.notEnrolled);
+            userId.setText("You have not selected an event");
+        }
+
+        if (eventPreferences.getTimeEnteredEvent(this.EVENT_NAME) != null) {
+            userStartingDate = eventPreferences.getTimeEnteredEvent(this.EVENT_NAME);
+        } else {
+            // if somehow date wasn't saved, when an event was picked, save a new one
+            userStartingDate = eventPreferences.enterNewEvent(this.EVENT_NAME);
         }
 
         // Get the date now
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-
-        // if DateStarted is existing, use it
-        if (sharedPreferences.contains("DateStarted")) {
-            userStartingDate = sharedPreferences.getLong("DateStarted", cal.getTimeInMillis());
-        } else { // else use time and date now and persist it for later use
-            userStartingDate = cal.getTimeInMillis();
-            editor.putLong("DateStarted",userStartingDate);
-            editor.apply();
-        }
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(new Date());
+//
+//        // if DateStarted is existing, use it
+//        if (sharedPreferences.contains("DateStarted")) {
+//            userStartingDate = sharedPreferences.getLong("DateStarted", cal.getTimeInMillis());
+//        } else { // else use time and date now and persist it for later use
+//            userStartingDate = cal.getTimeInMillis();
+//            editor.putLong("DateStarted",userStartingDate);
+//            editor.apply();
+//        }
 
         // build the fitness options
         FitnessOptions fitnessOptions = FitnessOptions.builder()

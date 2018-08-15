@@ -28,6 +28,7 @@ public class ContractList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contracts_list);
 
+        String EVENT_NAME = getIntent().getStringExtra("EVENT_NAME");
         String contractModelsJson = getIntent().getStringExtra("CONTRACT_MODELS_JSON");
 
         recyclerView = findViewById(R.id.contractsList);
@@ -51,7 +52,7 @@ public class ContractList extends AppCompatActivity {
         }
 
         // attach adapter to view
-        adapter = new ContractListAdapter(this, contractModels);
+        adapter = new ContractListAdapter(this, contractModels, EVENT_NAME);
         recyclerView.setAdapter(adapter);
     }
 }
