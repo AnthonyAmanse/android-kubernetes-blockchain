@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.amanse.anthony.fitcoinandroid.Config.BackendURL;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -32,16 +33,17 @@ public class ContractListAdapter extends RecyclerView.Adapter<ContractListAdapte
     private Context context;
     private ArrayList<ContractModel> contractModels;
     private static String TAG = "FITNESS_CONTRACT_LIST";
-    private static String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+    private static String BACKEND_URL = BackendURL.DEFAULT_URL;
 
-    public String EVENT_NAME="cfsummit";
+    public String EVENT_NAME;
 
     RequestQueue queue;
 
-    public ContractListAdapter(Context context, ArrayList<ContractModel> contractModels) {
+    public ContractListAdapter(Context context, ArrayList<ContractModel> contractModels, String eventName) {
         this.context = context;
         this.contractModels = contractModels;
         this.queue = Volley.newRequestQueue(context);
+        this.EVENT_NAME = eventName;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class ContractListAdapter extends RecyclerView.Adapter<ContractListAdapte
     public void onBindViewHolder(ContractListViewHolder holder, int position) {
         ContractModel contractModel = contractModels.get(position);
 
-        String contractDetails = String.valueOf(contractModel.quantity) + " of " + contractModel.productName;
+        String contractDetails = String.valueOf(contractModel.quantity) + " of " + contractModel.productName + " for a total of " + contractModel.getCost() + " cloudcoins";
 
         holder.cancelContractButton.setVisibility(View.GONE);
 

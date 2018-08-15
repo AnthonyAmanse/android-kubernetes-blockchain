@@ -18,6 +18,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amanse.anthony.fitcoinandroid.Config.BackendURL;
+import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
+import com.amanse.anthony.fitcoinandroid.Config.SelectedEventPreferences;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,10 +32,12 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Random;
+
 public class QuantitySelection extends AppCompatActivity {
 
     private static final String TAG = "FITNESS_QUANTITY";
-    private static final String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+    private static final String BACKEND_URL = BackendURL.DEFAULT_URL;
     public String EVENT_NAME="cfsummit";
 
     ImageView productImage;
@@ -51,6 +56,8 @@ public class QuantitySelection extends AppCompatActivity {
 
     ShopItemModel product;
     RequestQueue queue;
+    LocalPreferences localPreferences;
+    SelectedEventPreferences selectedEventPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,19 +66,24 @@ public class QuantitySelection extends AppCompatActivity {
         AppCompatActivity context = this;
 
         // get the user id
-        SharedPreferences sharedPreferences = this.getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
+//        SharedPreferences sharedPreferences = this.getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
 
         // check if enrolled in blockchain network
-        if (sharedPreferences.contains("BlockchainUserId")) {
-            this.userId = sharedPreferences.getString("BlockchainUserId","Something went wrong...");
-            if (this.userId.equals("Something went wrong...")) {
-                this.isEnrolled = false;
-            } else {
-                this.isEnrolled = true;
-            }
-        } else {
-            this.isEnrolled = false;
-        }
+//        if (sharedPreferences.contains("BlockchainUserId")) {
+//            this.userId = sharedPreferences.getString("BlockchainUserId","Something went wrong...");
+//            if (this.userId.equals("Something went wrong...")) {
+//                this.isEnrolled = false;
+//            } else {
+//                this.isEnrolled = true;
+//            }
+//        } else {
+//            this.isEnrolled = false;
+//        }
+        localPreferences = new LocalPreferences(this);
+        this.EVENT_NAME = localPreferences.getCurrentEventSelected();
+        selectedEventPreferences = new SelectedEventPreferences(this,localPreferences.getCurrentEventSelected());
+        this.userId = selectedEventPreferences.getBlockchainUserId();
+        this.isEnrolled = this.userId != null;
 
         // connect views
         productImage = findViewById(R.id.productImageInQuantity);
@@ -177,7 +189,8 @@ public class QuantitySelection extends AppCompatActivity {
 
     public void purchaseItem() {
         try {
-            JSONObject params = new JSONObject("{\"type\":\"invoke\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"makePurchase\", \"args\":[" + userId + "," + product.getSellerId() + "," + product.getProductId() + ",\"" + quantity.getText() + "\"]}}");
+            final int random = new Random().nextInt(1000000);
+            JSONObject params = new JSONObject("{\"type\":\"invoke\",\"queue\":\"user_queue-" + this.EVENT_NAME + "\",\"params\":{\"userId\":\"" + userId + "\", \"fcn\":\"makePurchase\", \"args\":[" + userId + "," + product.getSellerId() + "," + product.getProductId() + ",\"" + quantity.getText() + "\",\"" + String.format("c%06d",random) + "\"]}}");
             Log.d(TAG, params.toString());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BACKEND_URL + "/api/execute", params,
                     new Response.Listener<JSONObject>() {

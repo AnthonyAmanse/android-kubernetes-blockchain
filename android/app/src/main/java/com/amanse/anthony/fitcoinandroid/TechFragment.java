@@ -3,6 +3,7 @@ package com.amanse.anthony.fitcoinandroid;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
+import com.amanse.anthony.fitcoinandroid.Models.RequestPages;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,7 +30,7 @@ import java.util.Arrays;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TechFragment extends Fragment {
+public class TechFragment extends Fragment implements RequestPages {
 
     public String BACKEND_URL="https://cloudcoin.us-south.containers.appdomain.cloud";
     public String TAG="FITNESS_TECH_FRAG";
@@ -39,6 +42,7 @@ public class TechFragment extends Fragment {
     ArticlePagerAdapter adapter;
     public RequestQueue queue;
     Gson gson = new Gson();
+    LocalPreferences localPreferences;
 
     public TechFragment() {
         // Required empty public constructor
@@ -52,6 +56,8 @@ public class TechFragment extends Fragment {
 //        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         View rootView = inflater.inflate(R.layout.fragment_tech, container, false);
 
+        localPreferences = new LocalPreferences(getActivity());
+
         // request queue
         queue = Volley.newRequestQueue((AppCompatActivity) getActivity());
 
@@ -59,6 +65,15 @@ public class TechFragment extends Fragment {
 
         articles = new ArrayList<>();
         articlesDefault = new ArrayList<>();
+        boolean isAnEventSelected;
+
+        if (localPreferences.getCurrentEventSelected() == null || localPreferences.getCurrentEventSelected().equals("")) {
+            isAnEventSelected = false;
+        } else {
+            this.EVENT_NAME = localPreferences.getCurrentEventSelected();
+            Log.d(TAG, "Your selected event is: " + this.EVENT_NAME);
+            isAnEventSelected = true;
+        }
 
         // default data in case no internet or server down
         articlesDefault.add(gson.fromJson("{\"page\":1,\"link\":\"https://developer.ibm.com/code/2018/03/16/building-a-secret-map-an-experiment-in-the-economy-of-things/\",\"title\":\"Kubecon\",\"subtitle\":\"2018\",\"image\":\"kubecoin logo\",\"subtext\":\"\",\"description\":\"\",\"imageEncoded\":\"iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAIAAAD2HxkiAAAACXBIWXMAAAsSAAALEgHS3X78AAAg\n" +
@@ -591,7 +606,7 @@ public class TechFragment extends Fragment {
                 "ECUAAAAASUVORK5CYII=\n" +
                 "\"}",ArticleModel.class));
 
-        adapter = new ArticlePagerAdapter(rootView.getContext(), articles);
+        adapter = new ArticlePagerAdapter(rootView.getContext(), articles, isAnEventSelected, this);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
         requestPages();
@@ -609,7 +624,14 @@ public class TechFragment extends Fragment {
     }
 
     public void requestPages() {
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, BACKEND_URL + "/pages/" + this.EVENT_NAME , null,
+        requestPages(this.EVENT_NAME);
+    }
+
+    @Override
+    public void requestPages(String eventName) {
+        this.adapter.isAnEventSelected = localPreferences.getCurrentEventSelected() != null;
+        final ArticlePagerAdapter adapter = new ArticlePagerAdapter(this.adapter);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, BACKEND_URL + "/pages/" + eventName , null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -620,6 +642,7 @@ public class TechFragment extends Fragment {
                         } else {
                             articles.addAll(articlesDefault);
                         }
+                        viewPager.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {

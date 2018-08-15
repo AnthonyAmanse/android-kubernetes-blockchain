@@ -17,6 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amanse.anthony.fitcoinandroid.Config.BackendURL;
+import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
+import com.amanse.anthony.fitcoinandroid.Config.SelectedEventPreferences;
+import com.amanse.anthony.fitcoinandroid.Models.UserPosition;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -41,7 +45,7 @@ public class LeaderboardsFragment extends Fragment {
     RequestQueue queue;
     Gson gson;
     String TAG = "FITNESS_LEADERBOARDS";
-    String BACKEND_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";
+    String BACKEND_URL = BackendURL.DEFAULT_URL;
     public String EVENT_NAME="cfsummit";
 
     ArrayList<UserInfoModel> userInfoModels;
@@ -54,6 +58,9 @@ public class LeaderboardsFragment extends Fragment {
     int totalNumberOfUsers = 0;
 
     LeaderboardAdapater adapter;
+
+    LocalPreferences localPreferences;
+    SelectedEventPreferences selectedEventPreferences;
 
     public LeaderboardsFragment() {
         // Required empty public constructor
@@ -113,24 +120,37 @@ public class LeaderboardsFragment extends Fragment {
         queue = Volley.newRequestQueue(rootView.getContext());
 
         // initialize shared preferences - persistent data
-        SharedPreferences sharedPreferences = ((AppCompatActivity) getActivity()).getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
+//        SharedPreferences sharedPreferences = ((AppCompatActivity) getActivity()).getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
+        localPreferences = new LocalPreferences(getActivity());
+
 
         // get user info from shared prefrences
-        if (sharedPreferences.contains("UserInfo")) {
-            String userInfoJsonString = sharedPreferences.getString("UserInfo","error");
-            if (!userInfoJsonString.equals("error")) {
-                UserInfoModel userInfoModel = gson.fromJson(userInfoJsonString,UserInfoModel.class);
+//        if (sharedPreferences.contains("UserInfo")) {
+//            String userInfoJsonString = sharedPreferences.getString("UserInfo","error");
+//            if (!userInfoJsonString.equals("error")) {
+//                UserInfoModel userInfoModel = gson.fromJson(userInfoJsonString,UserInfoModel.class);
+//                userImage.setImageBitmap(userInfoModel.getBitmap());
+//                userName.setText(userInfoModel.getName());
+//            }
+//        }
+        if (localPreferences.getCurrentEventSelected() != null) {
+            this.EVENT_NAME = localPreferences.getCurrentEventSelected();
+            selectedEventPreferences = new SelectedEventPreferences(getActivity(), this.EVENT_NAME);
+
+            UserInfoModel userInfoModel = gson.fromJson(selectedEventPreferences.getUserInfo(), UserInfoModel.class);
+            if (userInfoModel != null) {
                 userImage.setImageBitmap(userInfoModel.getBitmap());
                 userName.setText(userInfoModel.getName());
+            } else {
+                Log.d(TAG,"no user info...");
+                userName.setText("registering...");
+                // not really
             }
         }
 
-        // check for the userId
-        if (sharedPreferences.contains("BlockchainUserId")) {
-            String userId = sharedPreferences.getString("BlockchainUserId","error");
-            if (!userId.equals("error")) {
-                getUserFromMongo(userId);
-            }
+        // get the users' position from the mongodb
+        if (selectedEventPreferences != null) {
+            getUserPositionFromMongo(selectedEventPreferences.getBlockchainUserId());
         }
 
         getLeaderboardTop(numberOfUsersInStanding);
@@ -138,36 +158,18 @@ public class LeaderboardsFragment extends Fragment {
         return rootView;
     }
 
-    public void getUserFromMongo(String userId) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/registerees/" + this.EVENT_NAME + "/info/" + userId , null,
+    public void getUserPositionFromMongo(String userId) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/leaderboard/" + this.EVENT_NAME + "/position/user/" + userId , null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        UserInfoModel userInfoModel = gson.fromJson(response.toString(), UserInfoModel.class);
-
-                        userStats.setText(String.format("%s steps", String.valueOf(userInfoModel.getSteps())));
-                        getUserPosition(String.valueOf(userInfoModel.getSteps()));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "That didn't work!");
-            }
-        });
-        queue.add(jsonObjectRequest);
-    }
-
-    public void getUserPosition(String steps) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/leaderboard/" + this.EVENT_NAME + "/position/steps/" + steps , null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            userPosition.setText(String.valueOf(response.getInt("userPosition")));
-                            getStatus(response.getInt("userPosition"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        UserPosition userPositionModel = gson.fromJson(response.toString(), UserPosition.class);
+                        int position = userPositionModel.getUserPosition();
+                        int totalUsers = userPositionModel.getCount();
+                        totalNumberOfUsers = totalUsers;
+                        userStats.setText(String.valueOf(userPositionModel.getSteps()));
+                        userPosition.setText(String.valueOf(position));
+                        status.setText(String.format("You are position %d of %d", position, totalUsers));
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -196,28 +198,6 @@ public class LeaderboardsFragment extends Fragment {
             }
         });
         queue.add(jsonArrayRequest);
-    }
-
-    public void getStatus(final int position) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/registerees/"  + this.EVENT_NAME + "/totalUsers" , null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            int totalUsers = response.getInt("count");
-                            status.setText(String.format("You are position %d of %d", position, totalUsers));
-                            totalNumberOfUsers = totalUsers;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "That didn't work!");
-            }
-        });
-        queue.add(jsonObjectRequest);
     }
 
 }
