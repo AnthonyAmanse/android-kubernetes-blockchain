@@ -86,6 +86,26 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
                 holder.productImage.setImageResource(R.drawable.popsocket);
                 holder.productImage.setTag(R.drawable.popsocket);
                 break;
+            case "ibm_cloud_sticker_bw":
+            case "ibm-cloud-sticker-bw":
+                holder.productImage.setImageResource(R.drawable.ibm_cloud_sticker_bw);
+                holder.productImage.setTag(R.drawable.ibm_cloud_sticker_bw);
+                break;
+            case "webcam_cover":
+            case "webcam-cover":
+                holder.productImage.setImageResource(R.drawable.webcam_cover);
+                holder.productImage.setTag(R.drawable.webcam_cover);
+                break;
+            case "ibm_earbuds":
+            case "ibm-earbuds":
+                holder.productImage.setImageResource(R.drawable.ibm_earbuds);
+                holder.productImage.setTag(R.drawable.ibm_earbuds);
+                break;
+            case "ibm_cloud_sticker":
+            case "ibm-cloud-sticker":
+                holder.productImage.setImageResource(R.drawable.ibm_cloud_sticker);
+                holder.productImage.setTag(R.drawable.ibm_cloud_sticker);
+                break;
             default:
                 holder.productImage.setImageResource(R.drawable.ic_footprint);
                 holder.productImage.setTag(R.drawable.ic_footprint);

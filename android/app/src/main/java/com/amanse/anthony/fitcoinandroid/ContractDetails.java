@@ -69,6 +69,26 @@ public class ContractDetails extends AppCompatActivity {
                 productImage.setImageResource(R.drawable.popsocket);
                 productImage.setTag(R.drawable.popsocket);
                 break;
+            case "ibm_cloud_sticker_bw":
+            case "ibm-cloud-sticker-bw":
+                productImage.setImageResource(R.drawable.ibm_cloud_sticker_bw);
+                productImage.setTag(R.drawable.ibm_cloud_sticker_bw);
+                break;
+            case "webcam_cover":
+            case "webcam-cover":
+                productImage.setImageResource(R.drawable.webcam_cover);
+                productImage.setTag(R.drawable.webcam_cover);
+                break;
+            case "ibm_earbuds":
+            case "ibm-earbuds":
+                productImage.setImageResource(R.drawable.ibm_earbuds);
+                productImage.setTag(R.drawable.ibm_earbuds);
+                break;
+            case "ibm_cloud_sticker":
+            case "ibm-cloud-sticker":
+                productImage.setImageResource(R.drawable.ibm_cloud_sticker);
+                productImage.setTag(R.drawable.ibm_cloud_sticker);
+                break;
             default:
                 productImage.setImageResource(R.drawable.ic_footprint);
                 productImage.setTag(R.drawable.ic_footprint);
