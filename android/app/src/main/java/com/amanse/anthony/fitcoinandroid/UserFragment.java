@@ -30,9 +30,11 @@ import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
+import com.google.android.gms.fitness.request.DataSourcesRequest;
 import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.result.DataReadResponse;
@@ -173,6 +175,41 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void accessGoogleFit() {
+        Fitness.getSensorsClient((AppCompatActivity) getActivity(), GoogleSignIn.getLastSignedInAccount((AppCompatActivity) getActivity()))
+                .findDataSources(
+                        new DataSourcesRequest.Builder()
+                                .setDataTypes(DataType.TYPE_STEP_COUNT_CUMULATIVE)
+                                .setDataSourceTypes(DataSource.TYPE_RAW)
+                                .build())
+                .addOnSuccessListener(
+                        new OnSuccessListener<List<DataSource>>() {
+                            @Override
+                            public void onSuccess(List<DataSource> dataSources) {
+                                for (DataSource dataSource : dataSources) {
+                                    Log.i(TAG, "Data source found: " + dataSource.toString());
+                                    Log.i(TAG, "Data Source type: " + dataSource.getDataType().getName());
+                                    Log.d(TAG, "Data source: " + dataSource.getType());
+
+                                    // Let's register a listener to receive Activity data!
+//                                    if (dataSource.getDataType().equals(DataType.TYPE_LOCATION_SAMPLE)
+//                                            && mListener == null) {
+//                                        Log.i(TAG, "Data source for LOCATION_SAMPLE found!  Registering.");
+//                                        registerFitnessDataListener(dataSource, DataType.TYPE_LOCATION_SAMPLE);
+//                                    }
+                                }
+                                accessGoogleFit(dataSources.get(0));
+                            }
+                        })
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "failed", e);
+                            }
+                        });
+    }
+
+    private void accessGoogleFit(DataSource dataSource) {
         // Subscribe to recordings
         Fitness.getRecordingClient((AppCompatActivity) getActivity(), GoogleSignIn.getLastSignedInAccount((AppCompatActivity) getActivity()))
                 .subscribe(DataType.AGGREGATE_STEP_COUNT_DELTA)
@@ -279,6 +316,7 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         for (DataPoint dp : dataSet.getDataPoints()) {
             Log.d(TAG, "Data point:");
+            Log.d(TAG, "Data point identifier: " + dp.getOriginalDataSource());
             Log.d(TAG, "\tType: " + dp.getDataType().getName());
             Log.d(TAG, "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
             Log.d(TAG, "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
