@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize push notification
         BMSClient.getInstance().initialize(this, BMSClient.REGION_US_SOUTH);
-        push.initialize(getApplicationContext(), "d1259f89-f37a-4c76-a3ae-e86cf3fbca98", "df7de78d-0994-4486-9d92-492392b05846");
+        push.initialize(getApplicationContext(), "6388599f-912a-4699-b4e9-5a4cb479476a", "33b2fad9-de1a-4756-a786-a6a0266aba1a");
         notificationListener = new MFPPushNotificationListener() {
 
             @Override
