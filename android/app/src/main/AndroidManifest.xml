@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.amanse.anthony.fitcoinandroid">
+    package="com.amanse.anthony.cloudcoins">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +19,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.amanse.anthony.fitcoinandroid.MainActivity"
+            android:name="com.amanse.anthony.cloudcoins.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,11 +30,11 @@
                 <category  android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.amanse.anthony.fitcoinandroid.QuantitySelection"
+        <activity android:name="com.amanse.anthony.cloudcoins.QuantitySelection"
             android:screenOrientation="portrait" />
-        <activity android:name="com.amanse.anthony.fitcoinandroid.ContractDetails"
+        <activity android:name="com.amanse.anthony.cloudcoins.ContractDetails"
             android:screenOrientation="portrait" />
-        <activity android:name="com.amanse.anthony.fitcoinandroid.ContractList"
+        <activity android:name="com.amanse.anthony.cloudcoins.ContractList"
             android:screenOrientation="portrait" />
 
         <activity android:name="com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPPushNotificationHandler" android:theme="@android:style/Theme.NoDisplay"/>

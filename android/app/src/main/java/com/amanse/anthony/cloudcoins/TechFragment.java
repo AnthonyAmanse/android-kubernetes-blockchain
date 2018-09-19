@@ -1,4 +1,4 @@
-package com.amanse.anthony.fitcoinandroid;
+package com.amanse.anthony.cloudcoins;
 
 
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
-import com.amanse.anthony.fitcoinandroid.Models.RequestPages;
+import com.amanse.anthony.cloudcoins.Config.LocalPreferences;
+import com.amanse.anthony.cloudcoins.Models.RequestPages;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;

@@ -1,4 +1,4 @@
-package com.amanse.anthony.fitcoinandroid;
+package com.amanse.anthony.cloudcoins;
 
 import com.google.gson.annotations.SerializedName;
 

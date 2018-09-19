@@ -1,4 +1,4 @@
-package com.amanse.anthony.fitcoinandroid;
+package com.amanse.anthony.cloudcoins;
 
 
 import android.content.Context;
@@ -17,10 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amanse.anthony.fitcoinandroid.Config.BackendURL;
-import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
-import com.amanse.anthony.fitcoinandroid.Config.SelectedEventPreferences;
-import com.amanse.anthony.fitcoinandroid.Models.UserPosition;
+import com.amanse.anthony.cloudcoins.Config.BackendURL;
+import com.amanse.anthony.cloudcoins.Config.LocalPreferences;
+import com.amanse.anthony.cloudcoins.Config.SelectedEventPreferences;
+import com.amanse.anthony.cloudcoins.Models.UserPosition;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;

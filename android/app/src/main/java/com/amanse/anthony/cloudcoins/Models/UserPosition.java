@@ -1,4 +1,4 @@
-package com.amanse.anthony.fitcoinandroid.Models;
+package com.amanse.anthony.cloudcoins.Models;
 
 public class UserPosition {
     int userPosition;

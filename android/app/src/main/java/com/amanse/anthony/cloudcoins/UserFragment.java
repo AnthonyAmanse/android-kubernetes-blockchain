@@ -1,4 +1,4 @@
-package com.amanse.anthony.fitcoinandroid;
+package com.amanse.anthony.cloudcoins;
 
 
 import android.app.Activity;
@@ -17,9 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.amanse.anthony.fitcoinandroid.Config.EventPreferences;
-import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
-import com.amanse.anthony.fitcoinandroid.Config.SelectedEventPreferences;
+import com.amanse.anthony.cloudcoins.Config.EventPreferences;
+import com.amanse.anthony.cloudcoins.Config.LocalPreferences;
+import com.amanse.anthony.cloudcoins.Config.SelectedEventPreferences;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;

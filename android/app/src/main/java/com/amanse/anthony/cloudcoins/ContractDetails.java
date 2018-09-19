@@ -1,4 +1,4 @@
-package com.amanse.anthony.fitcoinandroid;
+package com.amanse.anthony.cloudcoins;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

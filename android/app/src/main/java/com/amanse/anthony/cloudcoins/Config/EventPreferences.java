@@ -1,4 +1,4 @@
-package com.amanse.anthony.fitcoinandroid.Config;
+package com.amanse.anthony.cloudcoins.Config;
 
 import android.content.Context;
 import android.content.SharedPreferences;

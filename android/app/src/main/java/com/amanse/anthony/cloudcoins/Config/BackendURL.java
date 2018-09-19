@@ -1,4 +1,4 @@
-package com.amanse.anthony.fitcoinandroid.Config;
+package com.amanse.anthony.cloudcoins.Config;
 
 public final class BackendURL {
     public static final String DEFAULT_URL = "https://cloudcoin.us-south.containers.appdomain.cloud";

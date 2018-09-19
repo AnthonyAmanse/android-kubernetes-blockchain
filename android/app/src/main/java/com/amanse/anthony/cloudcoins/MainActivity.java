@@ -1,4 +1,4 @@
-package com.amanse.anthony.fitcoinandroid;
+package com.amanse.anthony.cloudcoins;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -26,9 +26,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 
-import com.amanse.anthony.fitcoinandroid.Config.BackendURL;
-import com.amanse.anthony.fitcoinandroid.Config.LocalPreferences;
-import com.amanse.anthony.fitcoinandroid.Config.SelectedEventPreferences;
+import com.amanse.anthony.cloudcoins.Config.BackendURL;
+import com.amanse.anthony.cloudcoins.Config.LocalPreferences;
+import com.amanse.anthony.cloudcoins.Config.SelectedEventPreferences;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,6 +47,8 @@ import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPSimplePushNotif
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize push notification
         BMSClient.getInstance().initialize(this, BMSClient.REGION_US_SOUTH);
-        push.initialize(getApplicationContext(), "d1259f89-f37a-4c76-a3ae-e86cf3fbca98", "df7de78d-0994-4486-9d92-492392b05846");
+        push.initialize(getApplicationContext(), "47b58b69-f2a4-454d-8037-c6020feedc09", "248d6cbd-ccd3-416a-b063-17001392e66c");
         notificationListener = new MFPPushNotificationListener() {
 
             @Override
@@ -199,12 +201,62 @@ public class MainActivity extends AppCompatActivity {
                 //handle successful device registration here
                 Log.d(TAG, response);
                 push.listen(notificationListener);
+                subscribe();
             }
 
             @Override
             public void onFailure(MFPPushException ex) {
                 //handle failure in device registration here
                 Log.d(TAG, ex.getErrorMessage());
+            }
+        });
+    }
+
+    public void subscribe() {
+        final String eventName = this.EVENT_NAME;
+        Log.d(TAG, "subscribing to tag: " + this.EVENT_NAME);
+
+        // get all subscribed tags
+        push.getSubscriptions(new MFPPushResponseListener<List<String>>() {
+
+            @Override
+            public void onSuccess(List<String> tags) {
+                System.out.println("Subscribed tags are: "+tags);
+                for (final String tag: tags) {
+
+                    // unsubscribe to tags except Push.ALL
+                    if (!tag.equals("Push.ALL")) {
+                        push.unsubscribe(tag, new MFPPushResponseListener<String>() {
+                            @Override
+                            public void onSuccess(String s) {
+                                System.out.println("Successfully unsubscribed from tag . "+ tag);
+                            }
+
+                            @Override
+                            public void onFailure(MFPPushException e) {
+                                System.out.println("Error while unsubscribing from tags. "+ e.getMessage());
+                            }
+                        });
+                    }
+                }
+
+                // subscribe to tag with event name
+                push.subscribe(eventName, new MFPPushResponseListener<String>() {
+                    @Override
+                    public void onSuccess(String arg) {
+                        System.out.println("Succesfully Subscribed to: "+ arg);
+                    }
+
+                    @Override
+                    public void onFailure(MFPPushException ex) {
+                        System.out.println("Error subscribing to Tag1.." + ex.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(MFPPushException ex) {
+                System.out.println("Error getting subscriptions.. " + ex.getMessage());
             }
         });
     }
