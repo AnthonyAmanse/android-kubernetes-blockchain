@@ -2,15 +2,10 @@ package com.amanse.anthony.cloudcoins;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -33,7 +28,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
@@ -44,7 +38,6 @@ import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPPushNotificatio
 import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPPushResponseListener;
 import com.ibm.mobilefirstplatform.clientsdk.android.push.api.MFPSimplePushNotification;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -140,17 +133,6 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
 
-        // initialize shared preferences - persistent data
-//        sharedPreferences = this.getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
-
-        // Check if user is already enrolled
-//        if (sharedPreferences.contains("BlockchainUserId")) {
-//            Log.d(TAG, "User already registered.");
-//            registerNotification(sharedPreferences.getString("BlockchainUserId","none"));
-//        } else {
-//                // register the user
-//                registerUser();
-//        }
         localPreferences = new LocalPreferences(this);
         if (localPreferences.getCurrentEventSelected() != null) {
             this.EVENT_NAME = localPreferences.getCurrentEventSelected();
@@ -386,26 +368,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         popupMenu.show();
-    }
-
-    // move this to a new fragment...
-    public void testGetEvents() {
-        try {
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, BackendURL.EVENTS_URL , null,
-                    new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            Log.d(TAG,response.toString());
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "That didn't work!");
-                }
-            });
-            queue.add(jsonArrayRequest);
-        } catch (Error e) {
-            e.printStackTrace();
-        }
     }
 }

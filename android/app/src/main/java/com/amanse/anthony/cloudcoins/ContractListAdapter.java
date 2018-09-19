@@ -143,15 +143,8 @@ public class ContractListAdapter extends RecyclerView.Adapter<ContractListAdapte
                 });
                 alertDialog.show();
 
-                // This finishes the activity
-//                ((AppCompatActivity) view.getContext()).finish();
             }
         });
-
-//        Intent intent = new Intent(view.getContext(),ContractDetails.class);
-//        intent.putExtra("CONTRACT_JSON", new Gson().toJson(contractModel, ContractModel.class));
-//
-//        view.getContext().startActivity(intent);
     }
 
     public void declineContract(ContractModel contractModel) {

@@ -8,27 +8,20 @@ import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.amanse.anthony.cloudcoins.Config.EventPreferences;
 import com.amanse.anthony.cloudcoins.Config.LocalPreferences;
 import com.amanse.anthony.cloudcoins.Controllers.EventList;
 import com.amanse.anthony.cloudcoins.Models.EventModel;
 import com.amanse.anthony.cloudcoins.Models.RequestPages;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.google.gson.Gson;
 

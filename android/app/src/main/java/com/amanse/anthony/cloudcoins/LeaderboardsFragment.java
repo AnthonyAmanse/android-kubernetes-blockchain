@@ -1,11 +1,8 @@
 package com.amanse.anthony.cloudcoins;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +28,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -119,20 +115,8 @@ public class LeaderboardsFragment extends Fragment {
         gson = new Gson();
         queue = Volley.newRequestQueue(rootView.getContext());
 
-        // initialize shared preferences - persistent data
-//        SharedPreferences sharedPreferences = ((AppCompatActivity) getActivity()).getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
         localPreferences = new LocalPreferences(getActivity());
 
-
-        // get user info from shared prefrences
-//        if (sharedPreferences.contains("UserInfo")) {
-//            String userInfoJsonString = sharedPreferences.getString("UserInfo","error");
-//            if (!userInfoJsonString.equals("error")) {
-//                UserInfoModel userInfoModel = gson.fromJson(userInfoJsonString,UserInfoModel.class);
-//                userImage.setImageBitmap(userInfoModel.getBitmap());
-//                userName.setText(userInfoModel.getName());
-//            }
-//        }
         if (localPreferences.getCurrentEventSelected() != null) {
             this.EVENT_NAME = localPreferences.getCurrentEventSelected();
             selectedEventPreferences = new SelectedEventPreferences(getActivity(), this.EVENT_NAME);

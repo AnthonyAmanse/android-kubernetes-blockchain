@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 
-import java.lang.reflect.Array;
 import java.util.Calendar;
 import java.util.Date;
 

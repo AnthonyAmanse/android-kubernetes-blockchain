@@ -1,11 +1,9 @@
 package com.amanse.anthony.cloudcoins.Controllers;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.amanse.anthony.cloudcoins.Config.BackendURL;
-import com.amanse.anthony.cloudcoins.Models.EventModel;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;

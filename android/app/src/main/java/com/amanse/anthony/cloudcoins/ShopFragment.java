@@ -1,9 +1,7 @@
 package com.amanse.anthony.cloudcoins;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -70,25 +68,6 @@ public class ShopFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_shop, container, false);
-//        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-//        actionBar.show();
-//        actionBar.setTitle("Shop");
-
-        // TODO:
-        // Replace with Config Preference class
-//        SharedPreferences sharedPreferences = ((AppCompatActivity) getActivity()).getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
-
-        // check if enrolled in blockchain network
-//        if (sharedPreferences.contains("BlockchainUserId")) {
-//            this.userId = sharedPreferences.getString("BlockchainUserId","Something went wrong...");
-//            if (this.userId.equals("Something went wrong...")) {
-//                this.isEnrolled = false;
-//            } else {
-//                this.isEnrolled = true;
-//            }
-//        } else {
-//            this.isEnrolled = false;
-//        }
 
         localPreferences = new LocalPreferences(getActivity());
         this.EVENT_NAME = localPreferences.getCurrentEventSelected();

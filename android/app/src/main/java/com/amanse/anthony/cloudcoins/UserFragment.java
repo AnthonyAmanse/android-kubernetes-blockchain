@@ -2,9 +2,7 @@ package com.amanse.anthony.cloudcoins;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -106,10 +104,6 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_user, container, false);
 
-//        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-//        actionBar.show();
-//        actionBar.setTitle("Footsteps");
-
         // attach labels
         userSteps = rootView.findViewById(R.id.numberOfSteps);
         distanceFromSteps = rootView.findViewById(R.id.distance);
@@ -120,21 +114,6 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         // request queue
         queue = Volley.newRequestQueue((AppCompatActivity) getActivity());
-
-        // initialize shared preferences - persistent data
-//        SharedPreferences sharedPreferences = ((AppCompatActivity) getActivity()).getSharedPreferences("shared_preferences_fitcoin", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        // check if enrolled in blockchain network
-//        if (sharedPreferences.contains("BlockchainUserId")) {
-//            userIdFromStorage = sharedPreferences.getString("BlockchainUserId","Something went wrong...");
-//            userId.setText(userIdFromStorage);
-//            if (!userIdFromStorage.equals("Something went wrong...")) {
-//                getStateOfUser(userIdFromStorage);
-//            }
-//        } else {
-//            userId.setText(R.string.notEnrolled);
-//        }
 
         localPreferences = new LocalPreferences(getActivity());
         eventPreferences = new EventPreferences(getActivity());
@@ -159,18 +138,6 @@ public class UserFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             userStartingDate = eventPreferences.enterNewEvent(this.EVENT_NAME);
         }
 
-        // Get the date now
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTime(new Date());
-//
-//        // if DateStarted is existing, use it
-//        if (sharedPreferences.contains("DateStarted")) {
-//            userStartingDate = sharedPreferences.getLong("DateStarted", cal.getTimeInMillis());
-//        } else { // else use time and date now and persist it for later use
-//            userStartingDate = cal.getTimeInMillis();
-//            editor.putLong("DateStarted",userStartingDate);
-//            editor.apply();
-//        }
 
         // build the fitness options
         FitnessOptions fitnessOptions = FitnessOptions.builder()
