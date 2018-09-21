@@ -9,9 +9,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/kube_icon"
+        android:icon="@mipmap/cloudcoin_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/kube_icon_round"
+        android:roundIcon="@mipmap/cloudcoin_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
