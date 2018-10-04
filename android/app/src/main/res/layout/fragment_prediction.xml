@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingTop="50dp"
+    android:paddingBottom="50dp"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    tools:context=".Fragments.PredictionFragment">
+
+    <TextView
+        android:id="@+id/titlePrediction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        android:text="Participant Predictions" />
+    <TextView
+        android:id="@+id/descriptionPrediction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="Here you can see the participantion levels predicted by our machine learning model (based on past events). It is very experimental ... and hopefully fun to compare the results." />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/prediction_chart"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:layout_margin="20dp"/>
+
+    <Button
+        android:id="@+id/mlLink"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/buttonColor"
+        android:text="Learn more ..."
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textAllCaps="false"
+        android:autoLink="all"
+        android:textColor="#FFF"
+        android:textSize="12sp" />
+
+
+</LinearLayout>

@@ -24,6 +24,7 @@ import android.widget.PopupMenu;
 import com.amanse.anthony.cloudcoins.Config.BackendURL;
 import com.amanse.anthony.cloudcoins.Config.LocalPreferences;
 import com.amanse.anthony.cloudcoins.Config.SelectedEventPreferences;
+import com.amanse.anthony.cloudcoins.Fragments.PredictionFragment;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -79,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.navigation_leaderboards:
                     selectedFragment = LeaderboardsFragment.newInstance();
+                    break;
+                case R.id.navigation_prediction:
+                    selectedFragment = PredictionFragment.newInstance();
+                    break;
             }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_layout, selectedFragment);

@@ -15,10 +15,17 @@
         android:id="@+id/navigation_shop"
         android:icon="@drawable/ic_checkout_cart"
         android:title="@string/title_shop" />
+
     <item
         android:id="@+id/navigation_leaderboards"
-        android:icon="@drawable/ic_bar_chart"
+        android:icon="@drawable/ic_leaderboards"
         android:title="@string/title_leaderboards" />
+
+
+    <item
+        android:id="@+id/navigation_prediction"
+        android:icon="@drawable/ic_prediction"
+        android:title="@string/title_prediction" />
 
     <!--<item-->
         <!--android:id="@+id/navigation_test"-->
