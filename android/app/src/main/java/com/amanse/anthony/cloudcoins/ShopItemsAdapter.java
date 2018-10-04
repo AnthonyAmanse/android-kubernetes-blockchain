@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -86,6 +90,21 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
                 holder.productImage.setImageResource(R.drawable.popsocket);
                 holder.productImage.setTag(R.drawable.popsocket);
                 break;
+            case "webcam-cover":
+            case "webcam_cover":
+                holder.productImage.setImageResource(R.drawable.webcam_cover);
+                holder.productImage.setTag(R.drawable.webcam_cover);
+                break;
+            case "ibm-cloud-sticker":
+            case "ibm_cloud_sticker":
+                holder.productImage.setImageResource(R.drawable.ibm_cloud_sticker);
+                holder.productImage.setTag(R.drawable.ibm_cloud_sticker);
+                break;
+            case "charging-cable":
+            case "charging_cable":
+                holder.productImage.setImageResource(R.drawable.usb_cable);
+                holder.productImage.setTag(R.drawable.usb_cable);
+                break;
             default:
                 holder.productImage.setImageResource(R.drawable.ic_footprint);
                 holder.productImage.setTag(R.drawable.ic_footprint);
@@ -109,6 +128,9 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
     public void onClick(View view) {
         TextView pendingChargesView = ((Activity) context).findViewById(R.id.pendingCharges);
         TextView fitcoinsBalanceView = ((Activity) context).findViewById(R.id.fitcoinsBalance);
+        RecyclerView recyclerView = ((Activity) context).findViewById(R.id.productList);
+
+        JSONObject response = (JSONObject) recyclerView.getTag();
 
         if (pendingChargesView.getText().toString().equals("-") || fitcoinsBalanceView.getText().toString().equals("-")) {
             Log.d("FITNESS_ADAPTER_SHOP", "state not yet loaded");
@@ -118,6 +140,8 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
 
             int availableToSpend = fitcoinsBalance + pendingCharges;
 
+
+
             ShopItemModel shopItemModel = (ShopItemModel) view.getTag();
             Log.d("FITNESS_ADAPTER_SHOP", "clicked on - " + shopItemModel.getProductName());
             ImageView productImage = (ImageView) view.findViewById(R.id.productImage);
@@ -126,6 +150,21 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
             intent.putExtra("PRODUCT_CHOSEN",(Integer) productImage.getTag());
             intent.putExtra("PRODUCT_JSON", new Gson().toJson(shopItemModel, ShopItemModel.class));
             intent.putExtra("AVAILABLE_BALANCE",availableToSpend);
+
+            // get current number of items of user
+            if (fitcoinsBalanceView.getTag() instanceof ArrayMap) {
+                ArrayMap<String,Integer> listOfItems = (ArrayMap<String,Integer>) fitcoinsBalanceView.getTag();
+                intent.putExtra("NUMBER_OF_PRODUCTS_USER_HAS",listOfItems.get(shopItemModel.getProductId()));
+                Log.d("FITNESS", "You have " + listOfItems.get(shopItemModel.getProductId()) + " of " + shopItemModel.getProductName());
+            }
+
+            // get limits of product
+            try {
+                int limitOfItem = response.getInt(shopItemModel.getProductId());
+                intent.putExtra("PRODUCT_LIMIT",limitOfItem);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
             Pair<View, String> pair1 = Pair.create(view.findViewById(R.id.productImage),"productImage");
@@ -134,23 +173,7 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) view.getContext(), pair1, pair2);
 
 
-
-            // check for bee_sticker contracts
-            boolean kubecoinShirtExists = false;
-            if (pendingChargesView.getTag() != null && (shopItemModel.getProductId().equals("kubecoin-shirt") || shopItemModel.getProductId().equals("kubecoin_shirt"))) {
-                for (ContractModel contractModel: (ContractModel[]) pendingChargesView.getTag()) {
-                    if (contractModel.getProductId().equals("kubecoin-shirt") || contractModel.getProductId().equals("kubecoin_shirt")) {
-                        kubecoinShirtExists = true;
-                    }
-                }
-            }
-
-            if (kubecoinShirtExists) {
-                Snackbar alreadyPurchasedNotification = Snackbar.make(((Activity) context).findViewById(R.id.shop_layout),"Users can only claim one shirt each.",Snackbar.LENGTH_SHORT);
-                alreadyPurchasedNotification.show();
-            } else {
-                view.getContext().startActivity(intent,options.toBundle());
-            }
+            view.getContext().startActivity(intent,options.toBundle());
         }
     }
 

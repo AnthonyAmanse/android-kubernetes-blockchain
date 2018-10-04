@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ public class ShopFragment extends Fragment {
 
     ArrayList<ShopItemModel> shopDataModels;
     ArrayList<ContractModel> contractDataModels;
+    ArrayMap<String,Integer> itemsInContracts;
     RecyclerView recyclerView;
     ShopItemsAdapter adapter;
     FloatingActionButton contractButton;
@@ -288,7 +290,7 @@ public class ShopFragment extends Fragment {
             } else if (initialRequestType.equals("getProductsForSale")) {
 
                 // GET PRODUCTS FOR SALE
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/api/results/" + resultId, null,
+                final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, BACKEND_URL + "/api/results/" + resultId, null,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
@@ -318,6 +320,20 @@ public class ShopFragment extends Fragment {
                                         if (shopItemModels != null) {
                                             shopDataModels.addAll(Arrays.asList(shopItemModels));
                                         }
+
+                                        JsonObjectRequest getLimits = new JsonObjectRequest(Request.Method.GET, "https://gist.githubusercontent.com/AnthonyAmanse/11a61a4e3b35b84f94932c368f1501b4/raw/66a4b16bc2909cdf1763f1784699a2fc6c07a9ff/test.json", null, new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                recyclerView.setTag(response);
+                                            }
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+
+                                            }
+                                        });
+                                        queue.add(getLimits);
+
                                         adapter.notifyDataSetChanged();
                                     } else {
                                         // if blockchain fails to process for some reason
@@ -371,6 +387,10 @@ public class ShopFragment extends Fragment {
 
                                         // ContractModel for pending contracts
                                         ArrayList<ContractModel> pendingContracts = new ArrayList<>();
+
+                                        // Get items and number of purchases
+                                        ArrayMap<String,Integer> listOfItems = new ArrayMap<>();
+
                                         int pendingCoins = 0;
 
                                         if (contractModels != null) {
@@ -379,9 +399,24 @@ public class ShopFragment extends Fragment {
                                                     pendingContracts.add(contract);
                                                     pendingCoins += contract.cost;
                                                 }
+
+                                                // count purchases
+                                                String productId = contract.productId;
+                                                Integer quantity = contract.quantity;
+
+                                                if (listOfItems.containsKey(productId)) {
+                                                    Integer currentQuantity = listOfItems.get(productId);
+                                                    listOfItems.setValueAt(listOfItems.indexOfKey(productId),quantity + currentQuantity);
+                                                } else {
+                                                    listOfItems.put(productId,quantity);
+                                                }
                                             }
+                                            itemsInContracts = new ArrayMap<>(listOfItems);
+                                            Log.d(TAG, itemsInContracts.toString());
+
                                             contractDataModels.addAll(Arrays.asList(contractModels));
                                             pendingCharges.setTag(contractModels);
+                                            fitcoinsBalance.setTag(listOfItems);
                                         }
 
                                         // insert ui views here

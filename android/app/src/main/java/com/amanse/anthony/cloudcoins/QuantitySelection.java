@@ -101,7 +101,9 @@ public class QuantitySelection extends AppCompatActivity {
 
         // get the data model in string of the chosen product
         String stringOfShopItemModel = getIntent().getStringExtra("PRODUCT_JSON");
-        Log.d("FITNESS_QUANTITY", getIntent().getStringExtra("PRODUCT_JSON"));
+        Log.d("FITNESS_QUANTITY", String.valueOf(getIntent().getIntExtra("PRODUCT_LIMIT",0)));
+        final int productLimit = getIntent().getIntExtra("PRODUCT_LIMIT",0);
+        final int userInventoryOfProduct = getIntent().getIntExtra("NUMBER_OF_PRODUCTS_USER_HAS",0);
 
         // convert the string to a data model and set to views
         final ShopItemModel shopItemModel = gson.fromJson(stringOfShopItemModel, ShopItemModel.class);
@@ -167,11 +169,30 @@ public class QuantitySelection extends AppCompatActivity {
                 // send makePurchase request to blockchain here
 
                 if (availableBalance >= Integer.valueOf(productPrice.getText().toString())) {
-                    purchaseItem();
+                    if (productLimit > 0) {
+                        // if there is a limit, check for user inventory
+                        if (userInventoryOfProduct + Integer.valueOf(quantity.getText().toString()) <= productLimit) {
+                            purchaseItem();
+                        } else {
+                            AlertDialog notEnoughBalance = new AlertDialog.Builder(view.getContext()).create();
+                            notEnoughBalance.setTitle("Purchase failed");
+                            notEnoughBalance.setMessage("A limit of " + productLimit + " has been set right now for " + productName.getText() + ".\nYou already have " + userInventoryOfProduct + " of " + productName.getText());
+                            notEnoughBalance.setButton(DialogInterface.BUTTON_POSITIVE, "Okay", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    ((Activity) view.getContext()).finish();
+                                }
+                            });
+                            notEnoughBalance.show();
+                        }
+                    } else {
+                        purchaseItem();
+                    }
                 } else {
                     AlertDialog notEnoughBalance = new AlertDialog.Builder(view.getContext()).create();
                     notEnoughBalance.setTitle("Purchase failed");
-                    notEnoughBalance.setMessage("You don't have enough available fitcoins. You may cancel your pending contracts if you want to change them.\n\nYour available balance is: " + availableBalance);
+                    notEnoughBalance.setMessage("You don't have enough available cloudcoins. You may cancel your pending contracts if you want to change them.\n\nYour available balance is: " + availableBalance);
                     notEnoughBalance.setButton(DialogInterface.BUTTON_POSITIVE, "Okay", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
