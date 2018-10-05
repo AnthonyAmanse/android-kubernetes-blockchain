@@ -37,3 +37,5 @@
 -keep class * {
     public private *;
 }
+
+-keep class com.github.mikephil.charting.** { *; }
