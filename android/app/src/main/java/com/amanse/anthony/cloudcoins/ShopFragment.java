@@ -321,7 +321,7 @@ public class ShopFragment extends Fragment {
                                             shopDataModels.addAll(Arrays.asList(shopItemModels));
                                         }
 
-                                        JsonObjectRequest getLimits = new JsonObjectRequest(Request.Method.GET, "https://gist.githubusercontent.com/AnthonyAmanse/11a61a4e3b35b84f94932c368f1501b4/raw/66a4b16bc2909cdf1763f1784699a2fc6c07a9ff/test.json", null, new Response.Listener<JSONObject>() {
+                                        JsonObjectRequest getLimits = new JsonObjectRequest(Request.Method.GET, "https://admin.cloudcoin.us-south.containers.appdomain.cloud/events/limits/" + EVENT_NAME, null, new Response.Listener<JSONObject>() {
                                             @Override
                                             public void onResponse(JSONObject response) {
                                                 recyclerView.setTag(response);
