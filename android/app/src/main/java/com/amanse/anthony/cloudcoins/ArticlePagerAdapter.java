@@ -135,7 +135,22 @@ public class ArticlePagerAdapter extends PagerAdapter {
             });
 
             if (!isAnEventSelected) {
-                articleSubTitle.performClick();
+//                articleSubTitle.performClick();
+                FragmentActivity fragmentActivity = (FragmentActivity) view.getContext();
+
+                // set selected event to cfsummit
+                LocalPreferences localPreferences = new LocalPreferences(fragmentActivity);
+                localPreferences.setCurrentEventSelected("cfsummit");
+
+                // enter the event
+                EventPreferences eventPreferences = new EventPreferences(fragmentActivity);
+                String[] eventsRegistered = eventPreferences.getEventsRegistered();
+                if (!Arrays.asList(eventsRegistered).contains("cfsummit")) {
+                    eventPreferences.enterNewEvent("cfsummit");
+                }
+                ((MainActivity) fragmentActivity).onEventSelected();
+                requestPages.requestPages("cfsummit");
+
             }
         }
 

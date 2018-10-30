@@ -62,17 +62,17 @@ public class PredictionFragment extends Fragment {
 
 
                 List<BarEntry> entries = new ArrayList<>();
-                entries.add(new BarEntry(0,participantPredictionModel.getCurrentParticipants()));
-                entries.add(new BarEntry(1,participantPredictionModel.getPrediction()));
-                BarDataSet barDataSet = new BarDataSet(entries,"Participants");
+                entries.add(new BarEntry(0,participantPredictionModel.getPrediction()));
+                entries.add(new BarEntry(1,participantPredictionModel.getCurrentParticipants()));
+                BarDataSet barDataSet = new BarDataSet(entries,"Projected versus actual participants");
                 barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
                 BarData barData = new BarData(barDataSet);
                 barChart.setData(barData);
                 barChart.invalidate();
 
                 List<String> labels = new ArrayList<>();
-                labels.add("Current Participants");
                 labels.add("Prediction");
+                labels.add("Current Participants");
 
                 // remove description label
                 barChart.getDescription().setEnabled(false);

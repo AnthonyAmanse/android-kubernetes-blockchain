@@ -401,14 +401,16 @@ public class ShopFragment extends Fragment {
                                                 }
 
                                                 // count purchases
-                                                String productId = contract.productId;
-                                                Integer quantity = contract.quantity;
+                                                if (!contract.state.equals("declined")) {
+                                                    String productId = contract.productId;
+                                                    Integer quantity = contract.quantity;
 
-                                                if (listOfItems.containsKey(productId)) {
-                                                    Integer currentQuantity = listOfItems.get(productId);
-                                                    listOfItems.setValueAt(listOfItems.indexOfKey(productId),quantity + currentQuantity);
-                                                } else {
-                                                    listOfItems.put(productId,quantity);
+                                                    if (listOfItems.containsKey(productId)) {
+                                                        Integer currentQuantity = listOfItems.get(productId);
+                                                        listOfItems.setValueAt(listOfItems.indexOfKey(productId),quantity + currentQuantity);
+                                                    } else {
+                                                        listOfItems.put(productId,quantity);
+                                                    }
                                                 }
                                             }
                                             itemsInContracts = new ArrayMap<>(listOfItems);

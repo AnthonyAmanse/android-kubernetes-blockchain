@@ -79,6 +79,11 @@ public class ContractDetails extends AppCompatActivity {
                 productImage.setImageResource(R.drawable.ibm_cloud_sticker);
                 productImage.setTag(R.drawable.ibm_cloud_sticker);
                 break;
+            case "charging-cable":
+            case "charging_cable":
+                productImage.setImageResource(R.drawable.usb_cable);
+                productImage.setTag(R.drawable.usb_cable);
+                break;
             default:
                 productImage.setImageResource(R.drawable.ic_footprint);
                 productImage.setTag(R.drawable.ic_footprint);
