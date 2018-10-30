@@ -70,7 +70,7 @@ public class ArticlePagerAdapter extends PagerAdapter {
 
         if (position == 0) {
             articleSubTitle.setClickable(true);
-            articleSubTitle.setText("other CloudCoins events >");
+            articleSubTitle.setText("other Kubecoin events >");
             articleSubTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
             TypedValue outValue = new TypedValue();
             context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);

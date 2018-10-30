@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.amanse.anthony.cloudcoins.Config.LocalPreferences;
 import com.amanse.anthony.cloudcoins.Controllers.PredictionClient;
 import com.amanse.anthony.cloudcoins.Models.ParticipantPredictionModel;
 import com.amanse.anthony.cloudcoins.R;
@@ -35,6 +36,7 @@ import java.util.List;
  */
 public class PredictionFragment extends Fragment {
 
+    LocalPreferences localPreferences;
 
     public PredictionFragment() {
         // Required empty public constructor
@@ -50,8 +52,8 @@ public class PredictionFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_prediction, container, false);
 
-
-        PredictionClient predictionClient = new PredictionClient(getContext());
+        localPreferences = new LocalPreferences(getActivity());
+        PredictionClient predictionClient = new PredictionClient(getContext(), localPreferences.getCurrentEventSelected());
         predictionClient.getPrediction(new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

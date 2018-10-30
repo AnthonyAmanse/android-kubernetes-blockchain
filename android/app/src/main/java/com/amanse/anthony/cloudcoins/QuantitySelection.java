@@ -192,7 +192,7 @@ public class QuantitySelection extends AppCompatActivity {
                 } else {
                     AlertDialog notEnoughBalance = new AlertDialog.Builder(view.getContext()).create();
                     notEnoughBalance.setTitle("Purchase failed");
-                    notEnoughBalance.setMessage("You don't have enough available cloudcoins. You may cancel your pending contracts if you want to change them.\n\nYour available balance is: " + availableBalance);
+                    notEnoughBalance.setMessage("You don't have enough available kubecoins. You may cancel your pending contracts if you want to change them.\n\nYour available balance is: " + availableBalance);
                     notEnoughBalance.setButton(DialogInterface.BUTTON_POSITIVE, "Okay", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {

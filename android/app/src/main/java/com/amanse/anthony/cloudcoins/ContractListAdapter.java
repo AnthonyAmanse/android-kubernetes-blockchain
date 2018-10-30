@@ -57,7 +57,7 @@ public class ContractListAdapter extends RecyclerView.Adapter<ContractListAdapte
     public void onBindViewHolder(ContractListViewHolder holder, int position) {
         ContractModel contractModel = contractModels.get(position);
 
-        String contractDetails = String.valueOf(contractModel.quantity) + " of " + contractModel.productName + " for a total of " + contractModel.getCost() + " cloudcoins";
+        String contractDetails = String.valueOf(contractModel.quantity) + " of " + contractModel.productName + " for a total of " + contractModel.getCost() + " kubecoinscl";
 
         holder.cancelContractButton.setVisibility(View.GONE);
 

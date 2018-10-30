@@ -18,16 +18,18 @@ import org.json.JSONObject;
 public class PredictionClient {
     Context context;
     RequestQueue queue;
+    String event;
 
-    public PredictionClient(Context context) {
+    public PredictionClient(Context context, String event) {
         this.context = context;
+        this.event = event;
         this.queue = Volley.newRequestQueue(context);
     }
 
     public void getPrediction(Response.Listener<JSONObject> responseListener) {
         try {
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://watsonml.opencloud-cluster.us-south.containers.appdomain.cloud/prediction/cfsummit", null,
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://watsonml.opencloud-cluster.us-south.containers.appdomain.cloud/prediction/" + event, null,
                     responseListener, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {

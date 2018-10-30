@@ -139,7 +139,7 @@
                         android:id="@+id/numberOfCoinsLabel"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="cloudcoins"
+                        android:text="kubecoins"
                         android:textColor="#ae2452"
                         android:textSize="18sp"
                         android:textStyle="bold" />
