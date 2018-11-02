@@ -136,20 +136,31 @@ public class ArticlePagerAdapter extends PagerAdapter {
 
             if (!isAnEventSelected) {
 //                articleSubTitle.performClick();
-                FragmentActivity fragmentActivity = (FragmentActivity) view.getContext();
+                final FragmentActivity fragmentActivity = (FragmentActivity) view.getContext();
 
-                // set selected event to cfsummit
-                LocalPreferences localPreferences = new LocalPreferences(fragmentActivity);
-                localPreferences.setCurrentEventSelected("cfsummit");
+                EventList eventList = new EventList(context);
+                eventList.getAvailableEvents(new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Gson gson = new Gson();
+                        EventModel[] events = gson.fromJson(response.toString(), EventModel[].class);
+                        eventsReceived = events;
 
-                // enter the event
-                EventPreferences eventPreferences = new EventPreferences(fragmentActivity);
-                String[] eventsRegistered = eventPreferences.getEventsRegistered();
-                if (!Arrays.asList(eventsRegistered).contains("cfsummit")) {
-                    eventPreferences.enterNewEvent("cfsummit");
-                }
-                ((MainActivity) fragmentActivity).onEventSelected();
-                requestPages.requestPages("cfsummit");
+                        String nextEventId = eventsReceived[0].getEventId();
+
+                        LocalPreferences localPreferences = new LocalPreferences(fragmentActivity);
+                        localPreferences.setCurrentEventSelected(nextEventId);
+
+                        // enter the event
+                        EventPreferences eventPreferences = new EventPreferences(fragmentActivity);
+                        String[] eventsRegistered = eventPreferences.getEventsRegistered();
+                        if (!Arrays.asList(eventsRegistered).contains(nextEventId)) {
+                            eventPreferences.enterNewEvent(nextEventId);
+                        }
+                        ((MainActivity) fragmentActivity).onEventSelected();
+                        requestPages.requestPages(nextEventId);
+                    }
+                });
 
             }
         }

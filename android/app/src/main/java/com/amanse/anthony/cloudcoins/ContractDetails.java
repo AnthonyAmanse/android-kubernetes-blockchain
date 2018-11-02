@@ -84,6 +84,28 @@ public class ContractDetails extends AppCompatActivity {
                 productImage.setImageResource(R.drawable.usb_cable);
                 productImage.setTag(R.drawable.usb_cable);
                 break;
+            case "vr-headset":
+            case "vr_headset":
+                productImage.setImageResource(R.drawable.vr_headset);
+                productImage.setTag(R.drawable.vr_headset);
+                break;
+            case "thermosbottle":
+                productImage.setImageResource(R.drawable.thermosbottle);
+                productImage.setTag(R.drawable.thermosbottle);
+                break;
+            case "notebook":
+                productImage.setImageResource(R.drawable.notebook);
+                productImage.setTag(R.drawable.notebook);
+                break;
+            case "laptop-handbag":
+            case "laptop_handbag":
+                productImage.setImageResource(R.drawable.laptop_handbag);
+                productImage.setTag(R.drawable.laptop_handbag);
+                break;
+            case "scarf":
+                productImage.setImageResource(R.drawable.scarf);
+                productImage.setTag(R.drawable.scarf);
+                break;
             default:
                 productImage.setImageResource(R.drawable.ic_footprint);
                 productImage.setTag(R.drawable.ic_footprint);

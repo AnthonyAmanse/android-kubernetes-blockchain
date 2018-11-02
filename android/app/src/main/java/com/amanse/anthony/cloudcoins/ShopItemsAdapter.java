@@ -105,6 +105,28 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
                 holder.productImage.setImageResource(R.drawable.usb_cable);
                 holder.productImage.setTag(R.drawable.usb_cable);
                 break;
+            case "vr-headset":
+            case "vr_headset":
+                holder.productImage.setImageResource(R.drawable.vr_headset);
+                holder.productImage.setTag(R.drawable.vr_headset);
+                break;
+            case "thermosbottle":
+                holder.productImage.setImageResource(R.drawable.thermosbottle);
+                holder.productImage.setTag(R.drawable.thermosbottle);
+                break;
+            case "notebook":
+                holder.productImage.setImageResource(R.drawable.notebook);
+                holder.productImage.setTag(R.drawable.notebook);
+                break;
+            case "laptop-handbag":
+            case "laptop_handbag":
+                holder.productImage.setImageResource(R.drawable.laptop_handbag);
+                holder.productImage.setTag(R.drawable.laptop_handbag);
+                break;
+            case "scarf":
+                holder.productImage.setImageResource(R.drawable.scarf);
+                holder.productImage.setTag(R.drawable.scarf);
+                break;
             default:
                 holder.productImage.setImageResource(R.drawable.ic_footprint);
                 holder.productImage.setTag(R.drawable.ic_footprint);
