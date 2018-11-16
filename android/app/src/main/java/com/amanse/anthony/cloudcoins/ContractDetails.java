@@ -106,6 +106,29 @@ public class ContractDetails extends AppCompatActivity {
                 productImage.setImageResource(R.drawable.scarf);
                 productImage.setTag(R.drawable.scarf);
                 break;
+            case "bonbon":
+                productImage.setImageResource(R.drawable.bonbon);
+                productImage.setTag(R.drawable.bonbon);
+                break;
+            case "candy-bag":
+            case "candy_bag":
+                productImage.setImageResource(R.drawable.candy_bag);
+                productImage.setTag(R.drawable.candy_bag);
+                break;
+            case "ice-scraper":
+            case "ice_scraper":
+                productImage.setImageResource(R.drawable.ice_scraper);
+                productImage.setTag(R.drawable.ice_scraper);
+                break;
+            case "toblerone":
+                productImage.setImageResource(R.drawable.toblerone);
+                productImage.setTag(R.drawable.toblerone);
+                break;
+            case "water-bottle":
+            case "water_bottle":
+                productImage.setImageResource(R.drawable.water_bottle);
+                productImage.setTag(R.drawable.water_bottle);
+                break;
             default:
                 productImage.setImageResource(R.drawable.ic_footprint);
                 productImage.setTag(R.drawable.ic_footprint);

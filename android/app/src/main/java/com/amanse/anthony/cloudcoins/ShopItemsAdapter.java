@@ -127,6 +127,29 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
                 holder.productImage.setImageResource(R.drawable.scarf);
                 holder.productImage.setTag(R.drawable.scarf);
                 break;
+            case "bonbon":
+                holder.productImage.setImageResource(R.drawable.bonbon);
+                holder.productImage.setTag(R.drawable.bonbon);
+                break;
+            case "candy-bag":
+            case "candy_bag":
+                holder.productImage.setImageResource(R.drawable.candy_bag);
+                holder.productImage.setTag(R.drawable.candy_bag);
+                break;
+            case "ice-scraper":
+            case "ice_scraper":
+                holder.productImage.setImageResource(R.drawable.ice_scraper);
+                holder.productImage.setTag(R.drawable.ice_scraper);
+                break;
+            case "toblerone":
+                holder.productImage.setImageResource(R.drawable.toblerone);
+                holder.productImage.setTag(R.drawable.toblerone);
+                break;
+            case "water-bottle":
+            case "water_bottle":
+                holder.productImage.setImageResource(R.drawable.water_bottle);
+                holder.productImage.setTag(R.drawable.water_bottle);
+                break;
             default:
                 holder.productImage.setImageResource(R.drawable.ic_footprint);
                 holder.productImage.setTag(R.drawable.ic_footprint);
