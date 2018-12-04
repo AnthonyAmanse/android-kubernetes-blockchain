@@ -151,6 +151,7 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
                 holder.productImage.setTag(R.drawable.water_bottle);
                 break;
             case "beanie":
+            case "beanies":
                 holder.productImage.setImageResource(R.drawable.beanie);
                 holder.productImage.setTag(R.drawable.beanie);
                 break;

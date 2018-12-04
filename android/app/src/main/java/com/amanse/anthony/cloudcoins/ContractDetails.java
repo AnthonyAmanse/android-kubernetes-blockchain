@@ -130,6 +130,7 @@ public class ContractDetails extends AppCompatActivity {
                 productImage.setTag(R.drawable.water_bottle);
                 break;
             case "beanie":
+            case "beanies":
                 productImage.setImageResource(R.drawable.beanie);
                 productImage.setTag(R.drawable.beanie);
                 break;
