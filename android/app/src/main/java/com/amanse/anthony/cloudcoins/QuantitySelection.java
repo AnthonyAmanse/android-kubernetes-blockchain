@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,8 +94,8 @@ public class QuantitySelection extends AppCompatActivity {
         claimButton = findViewById(R.id.claimButton);
 
         // get image from chosen product
-        int image = getIntent().getIntExtra("PRODUCT_CHOSEN",R.drawable.ic_footprint);
-        productImage.setImageResource(image);
+//        int image = getIntent().getIntExtra("PRODUCT_CHOSEN",R.drawable.ic_footprint);
+//        productImage.setImageResource(image);
 
         // get available balance
         availableBalance = getIntent().getIntExtra("AVAILABLE_BALANCE",0);
@@ -112,6 +113,7 @@ public class QuantitySelection extends AppCompatActivity {
         productName.setText(shopItemModel.getProductName());
         productPrice.setText(String.valueOf(shopItemModel.getPrice()));
 
+        loadImageFromServer(this.EVENT_NAME, shopItemModel.getProductId(), productImage);
         // request queue
         queue = Volley.newRequestQueue(this);
 
@@ -206,6 +208,12 @@ public class QuantitySelection extends AppCompatActivity {
         });
     }
 
+    public void loadImageFromServer(final String eventId, final String productId, final ImageView imageView) {
+        Picasso.get().load(BackendURL.DEFAULT_URL + "/buckets/" + eventId + "/" + productId + ".png")
+                .error(R.drawable.ic_footprint)
+                .into(imageView);
+    }
+
     public void purchaseItem() {
         try {
             final int random = new Random().nextInt(1000000);
@@ -262,6 +270,7 @@ public class QuantitySelection extends AppCompatActivity {
                                 // start activity of contract details
                                 Intent intent = new Intent(getApplicationContext(), ContractDetails.class);
                                 intent.putExtra("CONTRACT_JSON", new Gson().toJson(contractModel, ContractModel.class));
+                                intent.putExtra("EVENT_NAME",localPreferences.getCurrentEventSelected());
 
                                 Pair<View, String> pair1 = Pair.create(findViewById(R.id.productImageInQuantity),"productImage");
                                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair1);

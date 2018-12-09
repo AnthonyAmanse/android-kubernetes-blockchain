@@ -3,6 +3,7 @@ package com.amanse.anthony.cloudcoins;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -17,21 +18,27 @@ import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amanse.anthony.cloudcoins.Config.BackendURL;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.ShopItemsViewHolder> implements View.OnClickListener {
 
     private Context context;
     private ArrayList<ShopItemModel> shopItemModelList;
+    private String eventId;
 
-    public ShopItemsAdapter(Context context, ArrayList<ShopItemModel> shopItemModelList) {
+    public ShopItemsAdapter(Context context, ArrayList<ShopItemModel> shopItemModelList, String eventId) {
         this.context = context;
         this.shopItemModelList = shopItemModelList;
+        this.eventId = eventId;
     }
 
     @Override
@@ -150,14 +157,20 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
                 holder.productImage.setImageResource(R.drawable.water_bottle);
                 holder.productImage.setTag(R.drawable.water_bottle);
                 break;
-            case "beanie":
-            case "beanies":
-                holder.productImage.setImageResource(R.drawable.beanie);
-                holder.productImage.setTag(R.drawable.beanie);
-                break;
+//            case "beanie":
+//            case "beanies":
+//                holder.productImage.setImageResource(R.drawable.beanie);
+//                holder.productImage.setTag(R.drawable.beanie);
+//                break;
             default:
-                holder.productImage.setImageResource(R.drawable.ic_footprint);
-                holder.productImage.setTag(R.drawable.ic_footprint);
+//                Drawable drawableFromUrl = loadImageFromServer(this.eventId, shopItemModel.getProductId());
+//                if (drawableFromUrl != null) {
+//                    holder.productImage.setImageDrawable(drawableFromUrl);
+//                } else {
+//                    holder.productImage.setImageResource(R.drawable.ic_footprint);
+//                    holder.productImage.setTag(R.drawable.ic_footprint);
+//                }
+                loadImageFromServer(this.eventId, shopItemModel.getProductId(), holder.productImage);
                 break;
         }
         setAnimation(holder);
@@ -167,6 +180,12 @@ public class ShopItemsAdapter extends RecyclerView.Adapter<ShopItemsAdapter.Shop
         AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
         animation.setDuration(500);
         holder.itemView.startAnimation(animation);
+    }
+
+    public void loadImageFromServer(final String eventId, final String productId, final ImageView imageView) {
+        Picasso.get().load(BackendURL.DEFAULT_URL + "/buckets/" + eventId + "/" + productId + ".png")
+                .error(R.drawable.ic_footprint)
+                .into(imageView);
     }
 
     @Override

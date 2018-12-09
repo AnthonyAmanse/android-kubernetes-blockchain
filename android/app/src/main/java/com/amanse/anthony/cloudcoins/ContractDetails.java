@@ -6,7 +6,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amanse.anthony.cloudcoins.Config.BackendURL;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 public class ContractDetails extends AppCompatActivity {
 
@@ -35,7 +37,7 @@ public class ContractDetails extends AppCompatActivity {
         details = findViewById(R.id.detailsContract);
 
         ContractModel contractModel = new Gson().fromJson(getIntent().getStringExtra("CONTRACT_JSON"),ContractModel.class);
-
+        String EVENT_NAME = getIntent().getStringExtra("EVENT_NAME");
         // Set the images based on the productId
         // images are stored in app (res/drawable*)
         // in the future, backend maybe?
@@ -135,8 +137,9 @@ public class ContractDetails extends AppCompatActivity {
                 productImage.setTag(R.drawable.beanie);
                 break;
             default:
-                productImage.setImageResource(R.drawable.ic_footprint);
-                productImage.setTag(R.drawable.ic_footprint);
+//                productImage.setImageResource(R.drawable.ic_footprint);
+//                productImage.setTag(R.drawable.ic_footprint);
+                loadImageFromServer(EVENT_NAME,contractModel.getProductId(),productImage);
                 break;
         }
 
@@ -153,5 +156,11 @@ public class ContractDetails extends AppCompatActivity {
         } else {
             details.setVisibility(View.GONE);
         }
+    }
+
+    public void loadImageFromServer(final String eventId, final String productId, final ImageView imageView) {
+        Picasso.get().load(BackendURL.DEFAULT_URL + "/buckets/" + eventId + "/" + productId + ".png")
+                .error(R.drawable.ic_footprint)
+                .into(imageView);
     }
 }

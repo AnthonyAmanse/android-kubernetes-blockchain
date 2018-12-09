@@ -89,7 +89,7 @@ public class ShopFragment extends Fragment {
 
         shopDataModels = new ArrayList<>();
 
-        adapter = new ShopItemsAdapter(rootView.getContext(), shopDataModels);
+        adapter = new ShopItemsAdapter(rootView.getContext(), shopDataModels, this.EVENT_NAME);
         recyclerView.setAdapter(adapter);
 
         // initialize contract data model
